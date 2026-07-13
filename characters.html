@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>角色简介 · 九谕传说</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0d0e12;
+            color: #e8e6e3;
+            font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            padding: 2rem 1.5rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* ===== 返回导航 ===== */
+        .back-nav {
+            margin-bottom: 2rem;
+        }
+        .back-nav a {
+            color: #b8a788;
+            text-decoration: none;
+            font-size: 0.95rem;
+            border: 1px solid #2a2e38;
+            padding: 0.4rem 1.2rem;
+            border-radius: 30px;
+            transition: 0.2s;
+            display: inline-block;
+        }
+        .back-nav a:hover {
+            background: #1e222b;
+            border-color: #b8a788;
+        }
+        .back-nav a i {
+            margin-right: 0.5rem;
+        }
+
+        /* ===== 页面标题 ===== */
+        .page-header {
+            border-bottom: 1px solid #2a2c33;
+            padding-bottom: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        .page-header h1 {
+            font-size: 2.4rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            color: #f2e9d0;
+        }
+        .page-header h1 i {
+            color: #b8a788;
+            margin-right: 0.8rem;
+        }
+        .page-header .sub {
+            color: #9a9a9a;
+            font-size: 1rem;
+            margin-top: 0.3rem;
+        }
+
+        /* ===== 角色网格 3列 ===== */
+        .char-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .char-card {
+            background: #14181f;
+            border-radius: 18px;
+            padding: 1.8rem 1rem 1.4rem;
+            border: 1px solid #282d36;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100px;
+        }
+        .char-card:hover {
+            border-color: #b8a788;
+            background: #1a1e27;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+        }
+        .char-card .char-name {
+            font-size: 1.3rem;
+            font-weight: 400;
+            color: #e6dcc8;
+            letter-spacing: 0.5px;
+        }
+        .char-card .char-sub {
+            font-size: 0.8rem;
+            color: #7a7a7a;
+            margin-top: 0.2rem;
+        }
+        .char-card .char-hint {
+            font-size: 0.7rem;
+            color: #5d5d5d;
+            margin-top: 0.6rem;
+        }
+
+        /* ===== 弹窗（模态框）- 距界面0.5cm ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0.5rem;
+            left: 0.5rem;
+            right: 0.5rem;
+            bottom: 0.5rem;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(6px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 0.5rem;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-box {
+            background: #171b23;
+            border: 1px solid #3a3f4a;
+            border-radius: 28px;
+            max-width: 1200px;
+            width: 100%;
+            height: 100%;
+            max-height: 100%;
+            padding: 2rem 2rem 1.8rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+            position: relative;
+            animation: fadeUp 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        @keyframes fadeUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-box .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #2a2e38;
+            padding-bottom: 0.8rem;
+            margin-bottom: 1rem;
+            flex-shrink: 0;
+        }
+        .modal-box .modal-header h3 {
+            font-size: 1.5rem;
+            font-weight: 400;
+            color: #e6dcc8;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        .modal-box .modal-header h3 i {
+            color: #b8a788;
+        }
+        .modal-box .modal-close {
+            background: none;
+            border: none;
+            color: #8f8f8f;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: 0.2s;
+            padding: 0 0.4rem;
+        }
+        .modal-box .modal-close:hover {
+            color: #e8e6e3;
+        }
+
+        .modal-box .modal-body {
+            color: #cdc9c0;
+            font-size: 0.98rem;
+            line-height: 1.8;
+            overflow-y: auto;
+            padding-right: 0.3rem;
+            flex: 1;
+        }
+
+        /* ===== 角色弹窗内：三个部分 ===== */
+        .section-block {
+            margin-bottom: 1.6rem;
+        }
+        .section-block .section-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #e6dcc8;
+            border-bottom: 1px solid #2a2e38;
+            padding-bottom: 0.3rem;
+            margin-bottom: 0.6rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .section-block .section-title i {
+            color: #b8a788;
+            font-size: 1rem;
+        }
+        .section-block .sub-item {
+            margin-left: 1.2rem;
+            margin-bottom: 0.4rem;
+        }
+        .section-block .sub-item .sub-label {
+            color: #b8a788;
+            font-weight: 400;
+        }
+        .section-block .sub-item .sub-text {
+            color: #d0cbc0;
+        }
+
+        /* ===== 出场配角：折叠列表 ===== */
+        .region-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+        .region-item {
+            background: #0d1117;
+            border-radius: 10px;
+            border: 1px solid #2a2e38;
+            overflow: hidden;
+        }
+        .region-item .region-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.6rem 1.2rem;
+            cursor: pointer;
+            transition: 0.2s;
+            color: #d0cbc0;
+        }
+        .region-item .region-header:hover {
+            background: #1a1e27;
+        }
+        .region-item .region-header .region-name {
+            font-weight: 400;
+        }
+        .region-item .region-header .toggle-icon {
+            color: #b8a788;
+            transition: transform 0.25s;
+        }
+        .region-item .region-header .toggle-icon.open {
+            transform: rotate(180deg);
+        }
+        .region-item .region-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            padding: 0 1.2rem;
+            color: #c0b8a8;
+            border-top: 1px solid transparent;
+        }
+        .region-item .region-body.open {
+            max-height: 300px;
+            padding: 0.8rem 1.2rem;
+            border-top-color: #2a2e38;
+        }
+        .region-item .region-body p {
+            margin-bottom: 0.4rem;
+        }
+
+        /* ===== 子弹窗（重要配角 & 反派情报） ===== */
+        .sub-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0.5rem;
+            left: 0.5rem;
+            right: 0.5rem;
+            bottom: 0.5rem;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(6px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 0.5rem;
+        }
+        .sub-modal-overlay.active {
+            display: flex;
+        }
+        .sub-modal-box {
+            background: #171b23;
+            border: 1px solid #b8a788;
+            border-radius: 28px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90%;
+            padding: 2rem 2rem 1.8rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.9);
+            position: relative;
+            animation: fadeUp 0.25s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        .sub-modal-box .sub-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #2a2e38;
+            padding-bottom: 0.8rem;
+            margin-bottom: 1rem;
+        }
+        .sub-modal-box .sub-modal-header h4 {
+            font-size: 1.3rem;
+            font-weight: 400;
+            color: #e6dcc8;
+        }
+        .sub-modal-box .sub-modal-close {
+            background: none;
+            border: none;
+            color: #8f8f8f;
+            font-size: 1.8rem;
+            cursor: pointer;
+        }
+        .sub-modal-box .sub-modal-close:hover {
+            color: #e8e6e3;
+        }
+        .sub-modal-box .sub-modal-body {
+            color: #cdc9c0;
+            font-size: 0.98rem;
+            line-height: 1.8;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 900px) {
+            .char-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 600px) {
+            .char-grid { grid-template-columns: 1fr; }
+            .modal-box { padding: 1.2rem; }
+            .sub-modal-box { padding: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- ===== 返回导航 ===== -->
+    <div class="back-nav">
+        <a href="index.html"><i class="fas fa-arrow-left"></i> 返回主页</a>
+    </div>
+
+    <!-- ===== 页面标题 ===== -->
+    <div class="page-header">
+        <h1><i class="fas fa-user-astronaut"></i> 角色简介</h1>
+        <div class="sub">十二个关键角色与势力 · 点击探索</div>
+    </div>
+
+    <!-- ===== 角色网格 3x4 ===== -->
+    <div class="char-grid">
+
+        <!-- 1. 瑞伊 -->
+        <div class="char-card" data-modal="modal-ray">
+            <div class="char-name">瑞伊 <span style="color:#7a7a7a;font-weight:300;">Ray</span></div>
+            <div class="char-hint"><i class="fas fa-mouse-pointer"></i> 点击详情</div>
+        </div>
+
+        <!-- 2. 塔丽莉卡 -->
+        <div class="char-card" data-modal="modal-talilica">
+            <div class="char-name">塔丽莉卡 <span style="color:#7a7a7a;font-weight:300;">Talilica</span></div>
+            <div class="char-hint"><i class="fas fa-mouse-pointer"></i> 点击详情</div>
+        </div>
+
+        <!-- 3. 萨洛米 -->
+        <div class="char-card" data-modal="modal-salome">
+            <div class="char-name">萨洛米 <span style="color:#7a7a7a;font-weight:300;">Salome</span></div>
+            <div class="char-hint"><i class="fas fa-mouse-pointer"></i> 点击详情</div>
+        </div>
+
+        <!-- 4. 莉瑞尔 -->
+        <div class="char-card" data-modal="modal-lireal">
+            <div class="char-name">莉瑞尔 <span style="color:#7a7a7a;font-weight:300;">Lireal</span></div>
+            <div class="char-hint"><i class="fas fa-mouse-pointer"></i> 点击详情</div>
+        </div>
+
+        <!-- 5. 卡洛 -->
+        <div class="char-card" data-modal="modal-carlo">
+            <div class="char-name">卡洛 <span style="color:#7a7a7a;font-weight:300;">Carlo</span></div>
+            <div class="char-hint"><i class="fas fa-mouse-pointer"></i> 点击详情</div>
+        </div>
+
+        <!-- 6. 苏尔 -->
+        <div class="char-card" data-modal="modal-soul">
+            <div class="char-name">苏尔 <span style="color:#7a7a7a;font-weight:300;">Soul</span></div>
+            <div class="char-hint"><i class="fas fa-mouse-pointer"></i> 点击详情</div>
+        </div>
+
+        <!-- 7. 伊利安 -->
+        <div class="char-card" data-modal="modal-elian">
+            <div class="char-name">伊利安 <span style="color:#7a7a7a;font-weight:300;">Elian</span></div>
+            <div class="char-hint"><i class="fas fa-mouse-pointer"></i> 点击详情</div>
+        </div>
+
+        <!-- 8. 埃莉安娜 -->
+        <div class="char-card" data-modal="modal-alianna">
+            <div class="char-name">埃莉安娜 <span style="color:#7a7a7a;font-weight:300;">Alianna</span></div>
+            <div class="char-hint"><i class="fas fa-mouse-pointer"></i> 点击详情</div>
+        </div>
+
+        <!-- 9. 法格里姆 -->
+        <div class="char-card" data-modal="modal-fargrim">
+            <div class="char-name">法格里姆 <span style="color:#7a7a7a;font-weight:300;">Fargrim</span></div>
+            <div class="char-hint"><i class="fas fa-mouse-pointer"></i> 点击详情</div>
+        </div>
+
+        <!-- 10. 出场配角 -->
+        <div class="char-card" data-modal="modal-side-char">
+            <div class="char-name">出场配角</div>
+            <div class="char-sub">各地区角色</div>
+            <div class="char-hint"><i class="fas fa-mouse-pointer"></i> 点击详情</div>
+        </div>
+
+        <!-- 11. 重要配角 -->
+        <div class="char-card" data-modal="modal-important-char">
+            <div class="char-name">重要配角</div>
+            <div class="char-sub">核心故事角色</div>
+            <div class="char-hint"><i class="fas fa-mouse-pointer"></i> 点击详情</div>
+        </div>
+
+        <!-- 12. 反派情报 -->
+        <div class="char-card" data-modal="modal-villain">
+            <div class="char-name">反派情报</div>
+            <div class="char-sub">黑暗势力</div>
+            <div class="char-hint"><i class="fas fa-mouse-pointer"></i> 点击详情</div>
+        </div>
+
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- 前9个角色弹窗（人物简介 / 基本介绍 / 人物访谈）          -->
+    <!-- 此处仅展示结构，内容均为占位，您可自由填充              -->
+    <!-- ========================================================= -->
+
+    <!-- 瑞伊 -->
+    <div class="modal-overlay" id="modal-ray">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fas fa-user"></i> 瑞伊 · Ray</h3>
+                <button class="modal-close" data-close="modal-ray">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="section-block">
+                    <div class="section-title"><i class="fas fa-feather"></i> 人物简介</div>
+                    <div class="sub-item"><span class="sub-label">身份：</span><span class="sub-text">第一联盟贵族学院学生</span></div>
+                    <div class="sub-item"><span class="sub-label">种族：</span><span class="sub-text">人类</span></div>
+                    <div class="sub-item"><span class="sub-label">性格：</span><span class="sub-text">温和而坚韧，对未知充满好奇</span></div>
+                </div>
+                <div class="section-block">
+                    <div class="section-title"><i class="fas fa-info-circle"></i> 基本介绍</div>
+                    <p>瑞伊出生在中主城的下层区，凭借自己的努力考入了第一联盟贵族学院。她善于观察，总能发现别人忽略的细节。</p>
+                </div>
+                <div class="section-block">
+                    <div class="section-title"><i class="fas fa-comment-dots"></i> 人物访谈</div>
+                    <p><em>“我从不认为出身能决定一个人的高度。知识是平等的，只要你愿意伸手去够。” —— 瑞伊</em></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 塔丽莉卡 -->
+    <div class="modal-overlay" id="modal-talilica">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fas fa-user"></i> 塔丽莉卡 · Talilica</h3>
+                <button class="modal-close" data-close="modal-talilica">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="section-block"><div class="section-title"><i class="fas fa-feather"></i> 人物简介</div><div class="sub-item"><span class="sub-label">身份：</span><span class="sub-text">兽族萨满</span></div><div class="sub-item"><span class="sub-label">种族：</span><span class="sub-text">兽人</span></div></div>
+                <div class="section-block"><div class="section-title"><i class="fas fa-info-circle"></i> 基本介绍</div><p>塔丽莉卡是风息草原最年轻的萨满，能与先祖之灵沟通。她守护着兽族古老的祭祀仪式。</p></div>
+                <div class="section-block"><div class="section-title"><i class="fas fa-comment-dots"></i> 人物访谈</div><p><em>“草原的风会告诉你真相，只要你愿意倾听。” —— 塔丽莉卡</em></p></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 萨洛米 -->
+    <div class="modal-overlay" id="modal-salome">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fas fa-user"></i> 萨洛米 · Salome</h3>
+                <button class="modal-close" data-close="modal-salome">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="section-block"><div class="section-title"><i class="fas fa-feather"></i> 人物简介</div><div class="sub-item"><span class="sub-label">身份：</span><span class="sub-text">流浪剑客</span></div><div class="sub-item"><span class="sub-label">种族：</span><span class="sub-text">人类</span></div></div>
+                <div class="section-block"><div class="section-title"><i class="fas fa-info-circle"></i> 基本介绍</div><p>萨洛米是一位失去记忆的剑士，只记得自己来自金穗之谷。他的剑术精湛，但总是回避谈论过去。</p></div>
+                <div class="section-block"><div class="section-title"><i class="fas fa-comment-dots"></i> 人物访谈</div><p><em>“剑不会说谎，但人会说。所以我相信我的剑。” —— 萨洛米</em></p></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 莉瑞尔 -->
+    <div class="modal-overlay" id="modal-lireal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fas fa-user"></i> 莉瑞尔 · Lireal</h3>
+                <button class="modal-close" data-close="modal-lireal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="section-block"><div class="section-title"><i class="fas fa-feather"></i> 人物简介</div><div class="sub-item"><span class="sub-label">身份：</span><span class="sub-text">光明精灵骑士团长</span></div><div class="sub-item"><span class="sub-label">种族：</span><span class="sub-text">光明精灵</span></div></div>
+                <div class="section-block"><div class="section-title"><i class="fas fa-info-circle"></i> 基本介绍</div><p>莉瑞尔是光黯森林精灵王庭的骑士团长，她的剑术与光明魔法同样出色，对黑暗精灵有着根深蒂固的戒备。</p></div>
+                <div class="section-block"><div class="section-title"><i class="fas fa-comment-dots"></i> 人物访谈</div><p><em>“光明不会原谅背叛，但会给予公正的审判。” —— 莉瑞尔</em></p></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 卡洛 -->
+    <div class="modal-overlay" id="modal-carlo">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fas fa-user"></i> 卡洛 · Carlo</h3>
+                <button class="modal-close" data-close="modal-carlo">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="section-block"><div class="section-title"><i class="fas fa-feather"></i> 人物简介</div><div class="sub-item"><span class="sub-label">身份：</span><span class="sub-text">矮人铁匠大师</span></div><div class="sub-item"><span class="sub-label">种族：</span><span class="sub-text">矮人</span></div></div>
+                <div class="section-block"><div class="section-title"><i class="fas fa-info-circle"></i> 基本介绍</div><p>卡洛是蒸汽山脉最负盛名的铁匠，他打造的武器据说能斩断魔法。他性格固执，但手艺无人能及。</p></div>
+                <div class="section-block"><div class="section-title"><i class="fas fa-comment-dots"></i> 人物访谈</div><p><em>“好的武器需要好的材料，还有一颗不妥协的心。” —— 卡洛</em></p></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 苏尔 -->
+    <div class="modal-overlay" id="modal-soul">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fas fa-user"></i> 苏尔 · Soul</h3>
+                <button class="modal-close" data-close="modal-soul">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="section-block"><div class="section-title"><i class="fas fa-feather"></i> 人物简介</div><div class="sub-item"><span class="sub-label">身份：</span><span class="sub-text">巫妖 · 禁忌研究者</span></div><div class="sub-item"><span class="sub-label">种族：</span><span class="sub-text">亡灵</span></div></div>
+                <div class="section-block"><div class="section-title"><i class="fas fa-info-circle"></i> 基本介绍</div><p>苏尔曾是巫师山脉的天才，为了追求永生将自己转化为巫妖。他的实验基地如今已是一片废墟，但他本人依然游荡在九域。</p></div>
+                <div class="section-block"><div class="section-title"><i class="fas fa-comment-dots"></i> 人物访谈</div><p><em>“永生不是祝福，而是一种更长的诅咒。但我甘之如饴。” —— 苏尔</em></p></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 伊利安 -->
+    <div class="modal-overlay" id="modal-elian">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fas fa-user"></i> 伊利安 · Elian</h3>
+                <button class="modal-close" data-close="modal-elian">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="section-block"><div class="section-title"><i class="fas fa-feather"></i> 人物简介</div><div class="sub-item"><span class="sub-label">身份：</span><span class="sub-text">永恒神殿神官</span></div><div class="sub-item"><span class="sub-label">种族：</span><span class="sub-text">光明精灵</span></div></div>
+                <div class="section-block"><div class="section-title"><i class="fas fa-info-circle"></i> 基本介绍</div><p>伊利安是沃卡诺雪山永恒神殿的守护神官，他的职责是看护圣狱冰灯。他沉默寡言，但内心背负着巨大的秘密。</p></div>
+                <div class="section-block"><div class="section-title"><i class="fas fa-comment-dots"></i> 人物访谈</div><p><em>“冰灯里封存的不仅是火焰，还有一段不该被遗忘的历史。” —— 伊利安</em></p></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 埃莉安娜 -->
+    <div class="modal-overlay" id="modal-alianna">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fas fa-user"></i> 埃莉安娜 · Alianna</h3>
+                <button class="modal-close" data-close="modal-alianna">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="section-block"><div class="section-title"><i class="fas fa-feather"></i> 人物简介</div><div class="sub-item"><span class="sub-label">身份：</span><span class="sub-text">人鱼公主</span></div><div class="sub-item"><span class="sub-label">种族：</span><span class="sub-text">鲛人</span></div></div>
+                <div class="section-block"><div class="section-title"><i class="fas fa-info-circle"></i> 基本介绍</div><p>埃莉安娜是环岸群岛的统治者，她的歌声能平息风暴。她对于陆地生物抱有复杂的感情，但始终守护着海洋的平衡。</p></div>
+                <div class="section-block"><div class="section-title"><i class="fas fa-comment-dots"></i> 人物访谈</div><p><em>“海洋记得一切，包括那些被陆地遗忘的承诺。” —— 埃莉安娜</em></p></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 法格里姆 -->
+    <div class="modal-overlay" id="modal-fargrim">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fas fa-user"></i> 法格里姆 · Fargrim</h3>
+                <button class="modal-close" data-close="modal-fargrim">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="section-block"><div class="section-title"><i class="fas fa-feather"></i> 人物简介</div><div class="sub-item"><span class="sub-label">身份：</span><span class="sub-text">侏儒机械大师</span></div><div class="sub-item"><span class="sub-label">种族：</span><span class="sub-text">侏儒</span></div></div>
+                <div class="section-block"><div class="section-title"><i class="fas fa-info-circle"></i> 基本介绍</div><p>法格里姆是侏儒一族最杰出的机械师，他的发明推动了蒸汽山脉的工业革命。他性格古怪，但对机械有着近乎偏执的热爱。</p></div>
+                <div class="section-block"><div class="section-title"><i class="fas fa-comment-dots"></i> 人物访谈</div><p><em>“齿轮会告诉你真相，只要你能听懂它们的语言。” —— 法格里姆</em></p></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- 出场配角弹窗（九个地区，折叠）                            -->
+    <!-- ========================================================= -->
+    <div class="modal-overlay" id="modal-side-char">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fas fa-users"></i> 出场配角 · 各地区</h3>
+                <button class="modal-close" data-close="modal-side-char">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="region-list">
+
+                    <!-- 金穗之谷（有内容） -->
+                    <div class="region-item">
+                        <div class="region-header" onclick="toggleRegion(this)">
+                            <span class="region-name"><i class="fas fa-sun" style="color:#b8a788;margin-right:0.5rem;"></i>金穗之谷</span>
+                            <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                        </div>
+                        <div class="region-body">
+                            <p><strong>酒馆老板·汉克</strong> — 橡木桶酒馆的老板，消息灵通，总能在不经意间透露关键情报。</p>
+                            <p><strong>公会接待员·莉莉</strong> — 冒险者公会的接待员，对每一位冒险者都笑脸相迎，但据说她曾是一名出色的斥候。</p>
+                        </div>
+                    </div>
+
+                    <!-- 沃卡诺雪山（占位） -->
+                    <div class="region-item">
+                        <div class="region-header" onclick="toggleRegion(this)">
+                            <span class="region-name"><i class="fas fa-mountain" style="color:#b8a788;margin-right:0.5rem;"></i>沃卡诺雪山</span>
+                            <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                        </div>
+                        <div class="region-body">
+                            <p>暂无角色信息。</p>
+                        </div>
+                    </div>
+
+                    <!-- 巫师山脉（占位） -->
+                    <div class="region-item">
+                        <div class="region-header" onclick="toggleRegion(this)">
+                            <span class="region-name"><i class="fas fa-flask" style="color:#b8a788;margin-right:0.5rem;"></i>巫师山脉</span>
+                            <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                        </div>
+                        <div class="region-body">
+                            <p>暂无角色信息。</p>
+                        </div>
+                    </div>
+
+                    <!-- 环岸群岛（占位） -->
+                    <div class="region-item">
+                        <div class="region-header" onclick="toggleRegion(this)">
+                            <span class="region-name"><i class="fas fa-water" style="color:#b8a788;margin-right:0.5rem;"></i>环岸群岛</span>
+                            <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                        </div>
+                        <div class="region-body">
+                            <p>暂无角色信息。</p>
+                        </div>
+                    </div>
+
+                    <!-- 中主城（占位） -->
+                    <div class="region-item">
+                        <div class="region-header" onclick="toggleRegion(this)">
+                            <span class="region-name"><i class="fas fa-city" style="color:#b8a788;margin-right:0.5rem;"></i>中主城</span>
+                            <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                        </div>
+                        <div class="region-body">
+                            <p>暂无角色信息。</p>
+                        </div>
+                    </div>
+
+                    <!-- 光黯森林（占位） -->
+                    <div class="region-item">
+                        <div class="region-header" onclick="toggleRegion(this)">
+                            <span class="region-name"><i class="fas fa-tree" style="color:#b8a788;margin-right:0.5rem;"></i>光黯森林</span>
+                            <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                        </div>
+                        <div class="region-body">
+                            <p>暂无角色信息。</p>
+                        </div>
+                    </div>
+
+                    <!-- 蒸汽山脉（占位） -->
+                    <div class="region-item">
+                        <div class="region-header" onclick="toggleRegion(this)">
+                            <span class="region-name"><i class="fas fa-cogs" style="color:#b8a788;margin-right:0.5rem;"></i>蒸汽山脉</span>
+                            <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                        </div>
+                        <div class="region-body">
+                            <p>暂无角色信息。</p>
+                        </div>
+                    </div>
+
+                    <!-- 热浪沙漠（占位） -->
+                    <div class="region-item">
+                        <div class="region-header" onclick="toggleRegion(this)">
+                            <span class="region-name"><i class="fas fa-desert" style="color:#b8a788;margin-right:0.5rem;"></i>热浪沙漠</span>
+                            <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                        </div>
+                        <div class="region-body">
+                            <p>暂无角色信息。</p>
+                        </div>
+                    </div>
+
+                    <!-- 风息草原（占位） -->
+                    <div class="region-item">
+                        <div class="region-header" onclick="toggleRegion(this)">
+                            <span class="region-name"><i class="fas fa-wind" style="color:#b8a788;margin-right:0.5rem;"></i>风息草原</span>
+                            <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                        </div>
+                        <div class="region-body">
+                            <p>暂无角色信息。</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- 重要配角弹窗（三个名字，点击弹出子弹窗）                  -->
+    <!-- ========================================================= -->
+    <div class="modal-overlay" id="modal-important-char">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fas fa-star"></i> 重要配角</h3>
+                <button class="modal-close" data-close="modal-important-char">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="display:flex;flex-wrap:wrap;gap:0.8rem;">
+                    <span class="char-card" style="flex:1;min-width:120px;padding:0.8rem;cursor:pointer;border-color:#3a3f4a;" onclick="openSubModal('sub-modal-imp1')">塞拉·风行者</span>
+                    <span class="char-card" style="flex:1;min-width:120px;padding:0.8rem;cursor:pointer;border-color:#3a3f4a;" onclick="openSubModal('sub-modal-imp2')">铁锤·格伦</span>
+                    <span class="char-card" style="flex:1;min-width:120px;padding:0.8rem;cursor:pointer;border-color:#3a3f4a;" onclick="openSubModal('sub-modal-imp3')">吟游诗人·菲恩</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 重要配角 子弹窗 -->
+    <div class="sub-modal-overlay" id="sub-modal-imp1">
+        <div class="sub-modal-box">
+            <div class="sub-modal-header"><h4>塞拉·风行者</h4><button class="sub-modal-close" onclick="closeSubModal('sub-modal-imp1')">&times;</button></div>
+            <div class="sub-modal-body"><p>塞拉是风息草原最优秀的猎手，她的箭术百发百中。她曾独自一人深入黑暗森林，带回了一份关于黑暗精灵的情报。</p></div>
+        </div>
+    </div>
+    <div class="sub-modal-overlay" id="sub-modal-imp2">
+        <div class="sub-modal-box">
+            <div class="sub-modal-header"><h4>铁锤·格伦</h4><button class="sub-modal-close" onclick="closeSubModal('sub-modal-imp2')">&times;</button></div>
+            <div class="sub-modal-body"><p>格伦是矮人族最年轻的铸造大师，他打造的盾牌据说能抵挡龙息。他正在寻找失传的全晓之映，以完善自己的锻造技艺。</p></div>
+        </div>
+    </div>
+    <div class="sub-modal-overlay" id="sub-modal-imp3">
+        <div class="sub-modal-box">
+            <div class="sub-modal-header"><h4>吟游诗人·菲恩</h4><button class="sub-modal-close" onclick="closeSubModal('sub-modal-imp3')">&times;</button></div>
+            <div class="sub-modal-body"><p>菲恩游历九域，他的诗歌记录着各地的历史与传说。有人说他知晓生命树之心的秘密，但他总是笑而不答。</p></div>
+        </div>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- 反派情报弹窗（三个名字，点击弹出子弹窗）                  -->
+    <!-- ========================================================= -->
+    <div class="modal-overlay" id="modal-villain">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fas fa-skull"></i> 反派情报</h3>
+                <button class="modal-close" data-close="modal-villain">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="display:flex;flex-wrap:wrap;gap:0.8rem;">
+                    <span class="char-card" style="flex:1;min-width:120px;padding:0.8rem;cursor:pointer;border-color:#3a3f4a;" onclick="openSubModal('sub-modal-vil1')">暗影·莫尔</span>
+                    <span class="char-card" style="flex:1;min-width:120px;padding:0.8rem;cursor:pointer;border-color:#3a3f4a;" onclick="openSubModal('sub-modal-vil2')">血月祭司</span>
+                    <span class="char-card" style="flex:1;min-width:120px;padding:0.8rem;cursor:pointer;border-color:#3a3f4a;" onclick="openSubModal('sub-modal-vil3')">黑铁·沃里克</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 反派情报 子弹窗 -->
+    <div class="sub-modal-overlay" id="sub-modal-vil1">
+        <div class="sub-modal-box">
+            <div class="sub-modal-header"><h4>暗影·莫尔</h4><button class="sub-modal-close" onclick="closeSubModal('sub-modal-vil1')">&times;</button></div>
+            <div class="sub-modal-body"><p>莫尔是黑暗精灵激进派的领袖，他掌控着寂暗铃的力量，企图唤醒黑暗神。他的行踪飘忽不定，是联盟最危险的敌人之一。</p></div>
+        </div>
+    </div>
+    <div class="sub-modal-overlay" id="sub-modal-vil2">
+        <div class="sub-modal-box">
+            <div class="sub-modal-header"><h4>血月祭司</h4><button class="sub-modal-close" onclick="closeSubModal('sub-modal-vil2')">&times;</button></div>
+            <div class="sub-modal-body"><p>血月祭司是黑暗神的狂热信徒，在热浪沙漠深处进行着古老的献祭仪式。她似乎与神秘封印有着某种联系。</p></div>
+        </div>
+    </div>
+    <div class="sub-modal-overlay" id="sub-modal-vil3">
+        <div class="sub-modal-box">
+            <div class="sub-modal-header"><h4>黑铁·沃里克</h4><button class="sub-modal-close" onclick="closeSubModal('sub-modal-vil3')">&times;</button></div>
+            <div class="sub-modal-body"><p>沃里克曾是矮人族的英雄，但被黑暗元素腐蚀后成为了一名堕落的战士。他目前率领着一支空盗团，在九域各地掠夺圣器。</p></div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ========================================================= -->
+<!-- JavaScript                                                -->
+<!-- ========================================================= -->
+<script>
+    // ---- 主弹窗控制 ----
+    const cards = document.querySelectorAll('.char-card');
+    const overlays = document.querySelectorAll('.modal-overlay');
+    const closeBtns = document.querySelectorAll('.modal-close');
+
+    function openModal(id) {
+        const target = document.getElementById(id);
+        if (target) { target.classList.add('active'); document.body.style.overflow = 'hidden'; }
+    }
+    function closeModal(id) {
+        const target = document.getElementById(id);
+        if (target) { target.classList.remove('active'); document.body.style.overflow = ''; }
+    }
+
+    cards.forEach(card => {
+        card.addEventListener('click', function() {
+            const modalId = this.dataset.modal;
+            if (modalId) openModal(modalId);
+        });
+    });
+    closeBtns.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const modalId = this.dataset.close;
+            if (modalId) closeModal(modalId);
+        });
+    });
+    overlays.forEach(overlay => {
+        overlay.addEventListener('click', function(e) {
+            if (e.target === this) closeModal(this.id);
+        });
+    });
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            overlays.forEach(overlay => { if (overlay.classList.contains('active')) closeModal(overlay.id); });
+            document.querySelectorAll('.sub-modal-overlay.active').forEach(el => el.classList.remove('active'));
+        }
+    });
+
+    // ---- 出场配角折叠 ----
+    function toggleRegion(headerEl) {
+        const body = headerEl.nextElementSibling;
+        const icon = headerEl.querySelector('.toggle-icon i');
+        if (body.classList.contains('open')) {
+            body.classList.remove('open');
+            body.style.maxHeight = '0';
+            if (icon) icon.classList.remove('open');
+        } else {
+            body.classList.add('open');
+            body.style.maxHeight = body.scrollHeight + 'px';
+            if (icon) icon.classList.add('open');
+        }
+    }
+
+    // ---- 子弹窗（重要配角 & 反派情报） ----
+    function openSubModal(id) {
+        const target = document.getElementById(id);
+        if (target) { target.classList.add('active'); document.body.style.overflow = 'hidden'; }
+    }
+    function closeSubModal(id) {
+        const target = document.getElementById(id);
+        if (target) { target.classList.remove('active'); document.body.style.overflow = ''; }
+    }
+    // 点击背景关闭子弹窗
+    document.querySelectorAll('.sub-modal-overlay').forEach(el => {
+        el.addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+    });
+
+    console.log('角色简介页面已加载。');
+</script>
+
+</body>
+</html>
