@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大陆介绍 · 九谕传说</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0d0e12;
+            color: #e8e6e3;
+            font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            padding: 2rem 1.5rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* ===== 返回导航 ===== */
+        .back-nav {
+            margin-bottom: 2rem;
+        }
+        .back-nav a {
+            color: #b8a788;
+            text-decoration: none;
+            font-size: 0.95rem;
+            border: 1px solid #2a2e38;
+            padding: 0.4rem 1.2rem;
+            border-radius: 30px;
+            transition: 0.2s;
+            display: inline-block;
+        }
+        .back-nav a:hover {
+            background: #1e222b;
+            border-color: #b8a788;
+        }
+        .back-nav a i {
+            margin-right: 0.5rem;
+        }
+
+        /* ===== 页面标题 ===== */
+        .page-header {
+            border-bottom: 1px solid #2a2c33;
+            padding-bottom: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        .page-header h1 {
+            font-size: 2.4rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            color: #f2e9d0;
+        }
+        .page-header h1 i {
+            color: #b8a788;
+            margin-right: 0.8rem;
+        }
+        .page-header .sub {
+            color: #9a9a9a;
+            font-size: 1rem;
+            margin-top: 0.3rem;
+        }
+
+        /* ===== 3x3 网格 ===== */
+        .continent-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .continent-card {
+            background: #14181f;
+            border-radius: 18px;
+            padding: 1.5rem 1.2rem 1.2rem;
+            border: 1px solid #282d36;
+            cursor: pointer;
+            transition: 0.25s ease;
+            position: relative;
+        }
+        .continent-card:hover {
+            border-color: #b8a788;
+            background: #1a1e27;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+        }
+
+        .continent-card .card-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #e6dcc8;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .continent-card .card-title i {
+            color: #b8a788;
+            font-size: 1rem;
+            width: 1.6rem;
+        }
+        .continent-card .card-sub {
+            font-size: 0.8rem;
+            color: #7a7a7a;
+            margin-top: 0.1rem;
+            padding-left: 2.1rem;
+        }
+        .continent-card .card-hint {
+            font-size: 0.7rem;
+            color: #5d5d5d;
+            margin-top: 0.6rem;
+            text-align: right;
+            border-top: 1px dashed #2b2f38;
+            padding-top: 0.6rem;
+        }
+
+        /* ===== 弹窗（模态框）- 大陆详情 ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(6px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-box {
+            background: #171b23;
+            border: 1px solid #3a3f4a;
+            border-radius: 28px;
+            max-width: 700px;
+            width: 100%;
+            padding: 2rem 2rem 1.8rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+            position: relative;
+            animation: fadeUp 0.25s ease;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+        }
+        @keyframes fadeUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-box .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #2a2e38;
+            padding-bottom: 0.8rem;
+            margin-bottom: 1rem;
+            flex-shrink: 0;
+        }
+        .modal-box .modal-header h3 {
+            font-size: 1.4rem;
+            font-weight: 400;
+            color: #e6dcc8;
+        }
+        .modal-box .modal-header h3 i {
+            color: #b8a788;
+            margin-right: 0.6rem;
+        }
+        .modal-box .modal-close {
+            background: none;
+            border: none;
+            color: #8f8f8f;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: 0.2s;
+            padding: 0 0.4rem;
+        }
+        .modal-box .modal-close:hover {
+            color: #e8e6e3;
+        }
+
+        /* 大陆描述 */
+        .modal-desc {
+            color: #cdc9c0;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            margin-bottom: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        /* 选项列表 - 小长方形框 */
+        .option-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin-top: 0.2rem;
+            flex-shrink: 0;
+        }
+        .option-item {
+            background: #0d1117;
+            border: 1px solid #3a3f4a;
+            border-radius: 10px;
+            padding: 0.4rem 1.2rem;
+            font-size: 0.85rem;
+            color: #d0cbc0;
+            cursor: pointer;
+            transition: 0.2s ease;
+            position: relative;
+            user-select: none;
+        }
+        .option-item:hover {
+            background: #1e2632;
+            border-color: #b8a788;
+            color: #f2e9d0;
+        }
+
+        /* ===== 右侧小弹窗（工具提示） ===== */
+        .option-tooltip {
+            display: none;
+            position: fixed;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            max-width: 320px;
+            width: 100%;
+            background: #14181f;
+            border: 1px solid #b8a788;
+            border-radius: 18px;
+            padding: 1.2rem 1.5rem;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.8);
+            z-index: 2000;
+            color: #e0d6c0;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            animation: fadeIn 0.2s ease;
+        }
+        .option-tooltip.active {
+            display: block;
+        }
+        .option-tooltip .tooltip-title {
+            font-weight: 600;
+            color: #b8a788;
+            margin-bottom: 0.3rem;
+            font-size: 1rem;
+            border-bottom: 1px solid #2a2e38;
+            padding-bottom: 0.4rem;
+        }
+        .option-tooltip .tooltip-body {
+            color: #cdc9c0;
+            margin-top: 0.4rem;
+        }
+        .option-tooltip .tooltip-close {
+            position: absolute;
+            top: 0.4rem;
+            right: 0.8rem;
+            background: none;
+            border: none;
+            color: #6a6a6a;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .option-tooltip .tooltip-close:hover {
+            color: #e8e6e3;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(-50%) scale(0.96); }
+            100% { opacity: 1; transform: translateY(-50%) scale(1); }
+        }
+
+        /* 响应式 */
+        @media (max-width: 900px) {
+            .continent-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .option-tooltip {
+                right: 1rem;
+                max-width: 260px;
+                font-size: 0.85rem;
+                padding: 1rem;
+            }
+        }
+        @media (max-width: 600px) {
+            .continent-grid {
+                grid-template-columns: 1fr;
+            }
+            .option-tooltip {
+                right: 0.5rem;
+                left: 0.5rem;
+                max-width: none;
+                width: auto;
+                top: auto;
+                bottom: 1rem;
+                transform: none;
+                border-radius: 16px;
+            }
+            .option-tooltip.active {
+                display: block;
+            }
+            @keyframes fadeIn {
+                0% { opacity: 0; transform: translateY(20px); }
+                100% { opacity: 1; transform: translateY(0); }
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- ===== 返回导航 ===== -->
+    <div class="back-nav">
+        <a href="index.html"><i class="fas fa-arrow-left"></i> 返回主页</a>
+    </div>
+
+    <!-- ===== 页面标题 ===== -->
+    <div class="page-header">
+        <h1><i class="fas fa-map"></i> 大陆介绍</h1>
+        <div class="sub">九块大陆 · 点击探索每个区域</div>
+    </div>
+
+    <!-- ===== 3x3 大陆网格 ===== -->
+    <div class="continent-grid">
+
+        <!-- 西北 · 金穗之谷 -->
+        <div class="continent-card" data-modal="modal-northwest">
+            <div class="card-title"><i class="fas fa-sun"></i> 西北 · 金穗之谷</div>
+            <div class="card-sub">冒险者公会总部 · 橡木桶酒馆</div>
+            <div class="card-hint"><i class="fas fa-mouse-pointer"></i> 点击查看详情</div>
+        </div>
+
+        <!-- 北 · 沃卡诺雪山 -->
+        <div class="continent-card" data-modal="modal-north">
+            <div class="card-title"><i class="fas fa-mountain"></i> 北 · 沃卡诺雪山</div>
+            <div class="card-sub">永恒神殿 · 圣狱冰灯</div>
+            <div class="card-hint"><i class="fas fa-mouse-pointer"></i> 点击查看详情</div>
+        </div>
+
+        <!-- 东北 · 巫师山脉 -->
+        <div class="continent-card" data-modal="modal-northeast">
+            <div class="card-title"><i class="fas fa-flask"></i> 东北 · 巫师山脉</div>
+            <div class="card-sub">巫师塔 · 实验基地</div>
+            <div class="card-hint"><i class="fas fa-mouse-pointer"></i> 点击查看详情</div>
+        </div>
+
+        <!-- 西 · 环岸群岛 -->
+        <div class="continent-card" data-modal="modal-west">
+            <div class="card-title"><i class="fas fa-water"></i> 西 · 环岸群岛</div>
+            <div class="card-sub">人鱼传说 · 沉海旧址</div>
+            <div class="card-hint"><i class="fas fa-mouse-pointer"></i> 点击查看详情</div>
+        </div>
+
+        <!-- 中央 · 中主城 -->
+        <div class="continent-card" data-modal="modal-central">
+            <div class="card-title"><i class="fas fa-city"></i> 中央 · 中主城</div>
+            <div class="card-sub">权力中心 · 生命树</div>
+            <div class="card-hint"><i class="fas fa-mouse-pointer"></i> 点击查看详情</div>
+        </div>
+
+        <!-- 东 · 光黯森林 -->
+        <div class="continent-card" data-modal="modal-east">
+            <div class="card-title"><i class="fas fa-tree"></i> 东 · 光黯森林</div>
+            <div class="card-sub">精灵家园 · 辉月湖泊</div>
+            <div class="card-hint"><i class="fas fa-mouse-pointer"></i> 点击查看详情</div>
+        </div>
+
+        <!-- 西南 · 蒸汽山脉 -->
+        <div class="continent-card" data-modal="modal-southwest">
+            <div class="card-title"><i class="fas fa-cogs"></i> 西南 · 蒸汽山脉</div>
+            <div class="card-sub">机械之城 · 矮人侏儒国度</div>
+            <div class="card-hint"><i class="fas fa-mouse-pointer"></i> 点击查看详情</div>
+        </div>
+
+        <!-- 南 · 热浪沙漠 -->
+        <div class="continent-card" data-modal="modal-south">
+            <div class="card-title"><i class="fas fa-desert"></i> 南 · 热浪沙漠</div>
+            <div class="card-sub">神秘封印 · 美食之都</div>
+            <div class="card-hint"><i class="fas fa-mouse-pointer"></i> 点击查看详情</div>
+        </div>
+
+        <!-- 东南 · 风息草原 -->
+        <div class="continent-card" data-modal="modal-southeast">
+            <div class="card-title"><i class="fas fa-wind"></i> 东南 · 风息草原</div>
+            <div class="card-sub">兽族摇篮 · 月舞高台</div>
+            <div class="card-hint"><i class="fas fa-mouse-pointer"></i> 点击查看详情</div>
+        </div>
+
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- 九个大陆详情弹窗（模态框）                                -->
+    <!-- ========================================================= -->
+
+    <!-- 西北 · 金穗之谷 -->
+    <div class="modal-overlay" id="modal-northwest">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fas fa-sun"></i> 金穗之谷</h3>
+                <button class="modal-close" data-close="modal-northwest">&times;</button>
+            </div>
+            <div class="modal-desc">
+                金穗之谷是冒险者的天堂，金色的麦浪随风起伏。冒险者公会总部坐落于此，酒馆里永远流传着传奇故事。
+            </div>
+            <div class="option-list">
+                <span class="option-item" data-tooltip="tooltip-nw-1">冒险者公会</span>
+                <span class="option-item" data-tooltip="tooltip-nw-2">地下城入口</span>
+                <span class="option-item" data-tooltip="tooltip-nw-3">橡木桶酒馆</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 北 · 沃卡诺雪山 -->
+    <div class="modal-overlay" id="modal-north">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fas fa-mountain"></i> 沃卡诺雪山</h3>
+                <button class="modal-close" data-close="modal-north">&times;</button>
+            </div>
+            <div class="modal-desc">
+                终年暴风雪肆虐的雪山之巅，永恒神殿供奉着圣狱冰灯。火山深处封印着古老的力量，冒险者村落依山而建。
+            </div>
+            <div class="option-list">
+                <span class="option-item" data-tooltip="tooltip-n-1">冒险者村落</span>
+                <span class="option-item" data-tooltip="tooltip-n-2">永恒神殿</span>
+                <span class="option-item" data-tooltip="tooltip-n-3">极峰之眼</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 东北 · 巫师山脉 -->
+    <div class="modal-overlay" id="modal-northeast">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fas fa-flask"></i> 巫师山脉</h3>
+                <button class="modal-close" data-close="modal-northeast">&times;</button>
+            </div>
+            <div class="modal-desc">
+                巫师山脉是魔法研究的圣地，高耸的巫师塔直插云霄。这里汇聚了九域最强大的施法者，实验基地中诞生了无数奇迹与灾难。
+            </div>
+            <div class="option-list">
+                <span class="option-item" data-tooltip="tooltip-ne-1">巫师集会</span>
+                <span class="option-item" data-tooltip="tooltip-ne-2">巫师塔</span>
+                <span class="option-item" data-tooltip="tooltip-ne-3">实验基地</span>
+                <span class="option-item" data-tooltip="tooltip-ne-4">高级传送阵</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 西 · 环岸群岛 -->
+    <div class="modal-overlay" id="modal-west">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fas fa-water"></i> 环岸群岛</h3>
+                <button class="modal-close" data-close="modal-west">&times;</button>
+            </div>
+            <div class="modal-desc">
+                环岸群岛是海洋文明的摇篮，人鱼公主埃莉安娜在此统治。沉海旧址下埋藏着古老的秘密，卡律布狄斯号游轮穿梭于岛屿之间。
+            </div>
+            <div class="option-list">
+                <span class="option-item" data-tooltip="tooltip-w-1">人鱼港</span>
+                <span class="option-item" data-tooltip="tooltip-w-2">卡律布狄斯号</span>
+                <span class="option-item" data-tooltip="tooltip-w-3">沉海旧址</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 中央 · 中主城 -->
+    <div class="modal-overlay" id="modal-central">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fas fa-city"></i> 中主城</h3>
+                <button class="modal-close" data-close="modal-central">&times;</button>
+            </div>
+            <div class="modal-desc">
+                中主城是九域的权力心脏，生命树在此扎根。上中下三层城区各有特色，联盟议会与贵族学院掌控着世界走向。
+            </div>
+            <div class="option-list">
+                <span class="option-item" data-tooltip="tooltip-c-1">第一联盟贵族学院</span>
+                <span class="option-item" data-tooltip="tooltip-c-2">联盟中央图书馆</span>
+                <span class="option-item" data-tooltip="tooltip-c-3">种族联合商会</span>
+                <span class="option-item" data-tooltip="tooltip-c-4">主城审判庭</span>
+                <span class="option-item" data-tooltip="tooltip-c-5">地下黑市</span>
+                <span class="option-item" data-tooltip="tooltip-c-6">贫民窟</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 东 · 光黯森林 -->
+    <div class="modal-overlay" id="modal-east">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fas fa-tree"></i> 光黯森林</h3>
+                <button class="modal-close" data-close="modal-east">&times;</button>
+            </div>
+            <div class="modal-desc">
+                光黯森林被魔法分割为永夜与白昼，精灵王庭坐落于辉月湖畔。光明精灵与黑暗精灵的古老家园，隐藏着无数魔法秘密。
+            </div>
+            <div class="option-list">
+                <span class="option-item" data-tooltip="tooltip-e-1">精灵王庭</span>
+                <span class="option-item" data-tooltip="tooltip-e-2">辉月湖泊</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 西南 · 蒸汽山脉 -->
+    <div class="modal-overlay" id="modal-southwest">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fas fa-cogs"></i> 蒸汽山脉</h3>
+                <button class="modal-close" data-close="modal-southwest">&times;</button>
+            </div>
+            <div class="modal-desc">
+                蒸汽山脉是矮人与侏儒的机械圣地，齿轮与蒸汽构成了独特的文明景观。机械之城与其旧址见证了这个种族的兴衰。
+            </div>
+            <div class="option-list">
+                <span class="option-item" data-tooltip="tooltip-sw-1">机械之城</span>
+                <span class="option-item" data-tooltip="tooltip-sw-2">机械之城旧址</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 南 · 热浪沙漠 -->
+    <div class="modal-overlay" id="modal-south">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fas fa-desert"></i> 热浪沙漠</h3>
+                <button class="modal-close" data-close="modal-south">&times;</button>
+            </div>
+            <div class="modal-desc">
+                热浪沙漠是九域最炎热的地带，神秘封印大门镇守着未知的威胁。热浪小镇以美食闻名，是沙漠中唯一的安全绿洲。
+            </div>
+            <div class="option-list">
+                <span class="option-item" data-tooltip="tooltip-s-1">热浪小镇</span>
+                <span class="option-item" data-tooltip="tooltip-s-2">神秘封印</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 东南 · 风息草原 -->
+    <div class="modal-overlay" id="modal-southeast">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fas fa-wind"></i> 风息草原</h3>
+                <button class="modal-close" data-close="modal-southeast">&times;</button>
+            </div>
+            <div class="modal-desc">
+                风息草原是兽族的摇篮，一望无际的草原上点缀着部落的帐篷。月舞高台是祭祀圣地，栖地湖畔孕育了无数生灵。
+            </div>
+            <div class="option-list">
+                <span class="option-item" data-tooltip="tooltip-se-1">草原城镇</span>
+                <span class="option-item" data-tooltip="tooltip-se-2">兽族部落</span>
+                <span class="option-item" data-tooltip="tooltip-se-3">月舞高台</span>
+                <span class="option-item" data-tooltip="tooltip-se-4">栖地湖畔</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- 右侧小弹窗（工具提示）- 鼠标移开即消失，点击关闭也可    -->
+    <!-- 您可以在 .tooltip-body 中自定义文本                     -->
+    <!-- ========================================================= -->
+    <div id="tooltip-container">
+        <!-- 金穗之谷 -->
+        <div class="option-tooltip" id="tooltip-nw-1">
+            <button class="tooltip-close" data-tooltip-close="tooltip-nw-1">&times;</button>
+            <div class="tooltip-title">冒险者公会</div>
+            <div class="tooltip-body">这里是九域冒险者的最高机构，发布顶级委托，记录传奇功绩。</div>
+        </div>
+        <div class="option-tooltip" id="tooltip-nw-2">
+            <button class="tooltip-close" data-tooltip-close="tooltip-nw-2">&times;</button>
+            <div class="tooltip-title">地下城入口</div>
+            <div class="tooltip-body">通往古老地下世界的通道，危险与财富并存。</div>
+        </div>
+        <div class="option-tooltip" id="tooltip-nw-3">
+            <button class="tooltip-close" data-tooltip-close="tooltip-nw-3">&times;</button>
+            <div class="tooltip-title">橡木桶酒馆</div>
+            <div class="tooltip-body">冒险者们聚集的著名酒馆，情报与故事在此流淌。</div>
+        </div>
+
+        <!-- 沃卡诺雪山 -->
+        <div class="option-tooltip" id="tooltip-n-1">
+            <button class="tooltip-close" data-tooltip-close="tooltip-n-1">&times;</button>
+            <div class="tooltip-title">冒险者村落</div>
+            <div class="tooltip-body">雪山脚下的温暖村落，挑战雪山的冒险者在此整装待发。</div>
+        </div>
+        <div class="option-tooltip" id="tooltip-n-2">
+            <button class="tooltip-close" data-tooltip-close="tooltip-n-2">&times;</button>
+            <div class="tooltip-title">永恒神殿</div>
+            <div class="tooltip-body">供奉圣狱冰灯的神圣殿堂，光明精灵神官伊利安在此守护。</div>
+        </div>
+        <div class="option-tooltip" id="tooltip-n-3">
+            <button class="tooltip-close" data-tooltip-close="tooltip-n-3">&times;</button>
+            <div class="tooltip-title">极峰之眼</div>
+            <div class="tooltip-body">雪山之巅的观测台，据说可以窥见世界的尽头。</div>
+        </div>
+
+        <!-- 巫师山脉 -->
+        <div class="option-tooltip" id="tooltip-ne-1">
+            <button class="tooltip-close" data-tooltip-close="tooltip-ne-1">&times;</button>
+            <div class="tooltip-title">巫师集会</div>
+            <div class="tooltip-body">九域最强大的巫师定期聚会的秘密集会，决定魔法世界的走向。</div>
+        </div>
+        <div class="option-tooltip" id="tooltip-ne-2">
+            <button class="tooltip-close" data-tooltip-close="tooltip-ne-2">&times;</button>
+            <div class="tooltip-title">巫师塔</div>
+            <div class="tooltip-body">高耸入云的魔法之塔，每层都封印着不同的奥秘。</div>
+        </div>
+        <div class="option-tooltip" id="tooltip-ne-3">
+            <button class="tooltip-close" data-tooltip-close="tooltip-ne-3">&times;</button>
+            <div class="tooltip-title">实验基地</div>
+            <div class="tooltip-body">巫妖苏尔曾在此进行禁忌研究，如今已是一片废墟。</div>
+        </div>
+        <div class="option-tooltip" id="tooltip-ne-4">
+            <button class="tooltip-close" data-tooltip-close="tooltip-ne-4">&times;</button>
+            <div class="tooltip-title">高级传送阵</div>
+            <div class="tooltip-body">联通九域各地的远古传送网络，只有高级巫师能够激活。</div>
+        </div>
+
+        <!-- 环岸群岛 -->
+        <div class="option-tooltip" id="tooltip-w-1">
+            <button class="tooltip-close" data-tooltip-close="tooltip-w-1">&times;</button>
+            <div class="tooltip-title">人鱼港</div>
+            <div class="tooltip-body">环岸群岛最繁华的港口，人鱼公主埃莉安娜的王庭所在。</div>
+        </div>
+        <div class="option-tooltip" id="tooltip-w-2">
+            <button class="tooltip-close" data-tooltip-close="tooltip-w-2">&times;</button>
+            <div class="tooltip-title">卡律布狄斯号</div>
+            <div class="tooltip-body">传说中的豪华游轮，往返于群岛之间，船上从不缺少故事。</div>
+        </div>
+        <div class="option-tooltip" id="tooltip-w-3">
+            <button class="tooltip-close" data-tooltip-close="tooltip-w-3">&times;</button>
+            <div class="tooltip-title">沉海旧址</div>
+            <div class="tooltip-body">古老文明沉入海底的遗迹，无数冒险者在此寻找失落的秘密。</div>
+        </div>
+
+        <!-- 中主城 -->
+        <div class="option-tooltip" id="tooltip-c-1">
+            <button class="tooltip-close" data-tooltip-close="tooltip-c-1">&times;</button>
+            <div class="tooltip-title">第一联盟贵族学院</div>
+            <div class="tooltip-body">九域最高等的学府，培养精英与领袖，瑞伊在此就读。</div>
+        </div>
+        <div class="option-tooltip" id="tooltip-c-2">
+            <button class="tooltip-close" data-tooltip-close="tooltip-c-2">&times;</button>
+            <div class="tooltip-title">联盟中央图书馆</div>
+            <div class="tooltip-body">收藏了九域所有知识的巨型图书馆，传说中的全晓之映据说藏于其中。</div>
+        </div>
+        <div class="option-tooltip" id="tooltip-c-3">
+            <button class="tooltip-close" data-tooltip-close="tooltip-c-3">&times;</button>
+            <div class="tooltip-title">种族联合商会</div>
+            <div class="tooltip-body">各族商人共同组建的商业枢纽，控制着九域的经济命脉。</div>
+        </div>
+        <div class="option-tooltip" id="tooltip-c-4">
+            <button class="tooltip-close" data-tooltip-close="tooltip-c-4">&times;</button>
+            <div class="tooltip-title">主城审判庭</div>
+            <div class="tooltip-body">多种族法官组成的最高司法机构，亡灵亦可担任审判官。</div>
+        </div>
+        <div class="option-tooltip" id="tooltip-c-5">
+            <button class="tooltip-close" data-tooltip-close="tooltip-c-5">&times;</button>
+            <div class="tooltip-title">地下黑市</div>
+            <div class="tooltip-body">中主城下层的地下交易场所，情报与禁物在此流通。</div>
+        </div>
+        <div class="option-tooltip" id="tooltip-c-6">
+            <button class="tooltip-close" data-tooltip-close="tooltip-c-6">&times;</button>
+            <div class="tooltip-title">贫民窟</div>
+            <div class="tooltip-body">城中最底层居民的家园，混乱与温情并存之地。</div>
+        </div>
+
+        <!-- 光黯森林 -->
+        <div class="option-tooltip" id="tooltip-e-1">
+            <button class="tooltip-close" data-tooltip-close="tooltip-e-1">&times;</button>
+            <div class="tooltip-title">精灵王庭</div>
+            <div class="tooltip-body">光明精灵女王与骑士团长莉瑞尔所在，辉月湖畔的王庭。</div>
+        </div>
+        <div class="option-tooltip" id="tooltip-e-2">
+            <button class="tooltip-close" data-tooltip-close="tooltip-e-2">&times;</button>
+            <div class="tooltip-title">辉月湖泊</div>
+            <div class="tooltip-body">倒映月光的圣洁湖泊，传说在月圆之夜能看见创世神的倒影。</div>
+        </div>
+
+        <!-- 蒸汽山脉 -->
+        <div class="option-tooltip" id="tooltip-sw-1">
+            <button class="tooltip-close" data-tooltip-close="tooltip-sw-1">&times;</button>
+            <div class="tooltip-title">机械之城</div>
+            <div class="tooltip-body">矮人与侏儒共建的蒸汽朋克之城，齿轮轰鸣永不停歇。</div>
+        </div>
+        <div class="option-tooltip" id="tooltip-sw-2">
+            <button class="tooltip-close" data-tooltip-close="tooltip-sw-2">&times;</button>
+            <div class="tooltip-title">机械之城旧址</div>
+            <div class="tooltip-body">被废弃的古代机械都市，锈蚀的齿轮间隐藏着失落的技术。</div>
+        </div>
+
+        <!-- 热浪沙漠 -->
+        <div class="option-tooltip" id="tooltip-s-1">
+            <button class="tooltip-close" data-tooltip-close="tooltip-s-1">&times;</button>
+            <div class="tooltip-title">热浪小镇</div>
+            <div class="tooltip-body">沙漠中唯一的安全绿洲，以独特美食闻名九域。</div>
+        </div>
+        <div class="option-tooltip" id="tooltip-s-2">
+            <button class="tooltip-close" data-tooltip-close="tooltip-s-2">&times;</button>
+            <div class="tooltip-title">神秘封印</div>
+            <div class="tooltip-body">沙漠深处封印着未知存在的大门，据说与黑暗神有关。</div>
+        </div>
+
+        <!-- 风息草原 -->
+        <div class="option-tooltip" id="tooltip-se-1">
+            <button class="tooltip-close" data-tooltip-close="tooltip-se-1">&times;</button>
+            <div class="tooltip-title">草原城镇</div>
+            <div class="tooltip-body">兽族与人类混居的边境城镇，文化交融之地。</div>
+        </div>
+        <div class="option-tooltip" id="tooltip-se-2">
+            <button class="tooltip-close" data-tooltip-close="tooltip-se-2">&times;</button>
+            <div class="tooltip-title">兽族部落</div>
+            <div class="tooltip-body">分散在草原各处的兽族聚集地，保留着古老的部落传统。</div>
+        </div>
+        <div class="option-tooltip" id="tooltip-se-3">
+            <button class="tooltip-close" data-tooltip-close="tooltip-se-3">&times;</button>
+            <div class="tooltip-title">月舞高台</div>
+            <div class="tooltip-body">祭祀与庆典的圣地，月光下兽族战士在此起舞。</div>
+        </div>
+        <div class="option-tooltip" id="tooltip-se-4">
+            <button class="tooltip-close" data-tooltip-close="tooltip-se-4">&times;</button>
+            <div class="tooltip-title">栖地湖畔</div>
+            <div class="tooltip-body">草原上最大的湖泊，滋养了无数生灵，是兽族的生命之源。</div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ========================================================= -->
+<!-- JavaScript：弹窗控制 + 选项工具提示（悬停显示/移开消失）  -->
+<!-- ========================================================= -->
+<script>
+    (function() {
+        // ---- 大陆卡片 → 打开模态框 ----
+        const cards = document.querySelectorAll('.continent-card');
+        const overlays = document.querySelectorAll('.modal-overlay');
+        const closeBtns = document.querySelectorAll('.modal-close');
+
+        function openModal(id) {
+            const target = document.getElementById(id);
+            if (target) {
+                target.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                closeAllTooltips();
+            }
+        }
+
+        function closeModal(id) {
+            const target = document.getElementById(id);
+            if (target) {
+                target.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        }
+
+        cards.forEach(card => {
+            card.addEventListener('click', function() {
+                const modalId = this.dataset.modal;
+                if (modalId) openModal(modalId);
+            });
+        });
+
+        closeBtns.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const modalId = this.dataset.close;
+                if (modalId) closeModal(modalId);
+            });
+        });
+
+        overlays.forEach(overlay => {
+            overlay.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModal(this.id);
+                }
+            });
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                overlays.forEach(overlay => {
+                    if (overlay.classList.contains('active')) {
+                        closeModal(overlay.id);
+                    }
+                });
+                closeAllTooltips();
+            }
+        });
+
+        // ---- 选项悬停 → 右侧工具提示（鼠标移开即消失，点击关闭也可） ----
+        const optionItems = document.querySelectorAll('.option-item');
+        const tooltips = document.querySelectorAll('.option-tooltip');
+        let activeTooltipId = null;
+        let closeTimer = null;
+
+        function closeAllTooltips() {
+            tooltips.forEach(t => t.classList.remove('active'));
+            activeTooltipId = null;
+            if (closeTimer) {
+                clearTimeout(closeTimer);
+                closeTimer = null;
+            }
+        }
+
+        function openTooltip(id) {
+            closeAllTooltips();
+            const target = document.getElementById(id);
+            if (target) {
+                target.classList.add('active');
+                activeTooltipId = id;
+            }
+        }
+
+        // 悬停显示
+        optionItems.forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                const tooltipId = this.dataset.tooltip;
+                if (tooltipId) {
+                    if (closeTimer) {
+                        clearTimeout(closeTimer);
+                        closeTimer = null;
+                    }
+                    openTooltip(tooltipId);
+                }
+            });
+            item.addEventListener('mouseleave', function() {
+                // 鼠标离开选项，延迟关闭工具提示
+                if (closeTimer) {
+                    clearTimeout(closeTimer);
+                    closeTimer = null;
+                }
+                closeTimer = setTimeout(() => {
+                    closeAllTooltips();
+                    closeTimer = null;
+                }, 150);
+            });
+        });
+
+        // 工具提示悬停时保持打开，移开时关闭
+        tooltips.forEach(tip => {
+            tip.addEventListener('mouseenter', function() {
+                if (closeTimer) {
+                    clearTimeout(closeTimer);
+                    closeTimer = null;
+                }
+            });
+            tip.addEventListener('mouseleave', function() {
+                if (closeTimer) {
+                    clearTimeout(closeTimer);
+                    closeTimer = null;
+                }
+                closeTimer = setTimeout(() => {
+                    closeAllTooltips();
+                    closeTimer = null;
+                }, 150);
+            });
+        });
+
+        // 工具提示上的关闭按钮
+        document.querySelectorAll('.tooltip-close').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const tooltipId = this.dataset.tooltipClose;
+                if (tooltipId) {
+                    const el = document.getElementById(tooltipId);
+                    if (el) el.classList.remove('active');
+                    if (activeTooltipId === tooltipId) activeTooltipId = null;
+                }
+                if (closeTimer) {
+                    clearTimeout(closeTimer);
+                    closeTimer = null;
+                }
+            });
+        });
+
+        // 点击页面其他区域关闭工具提示
+        document.addEventListener('click', function(e) {
+            // 检查是否点击了选项或工具提示本身
+            let isTarget = false;
+            optionItems.forEach(item => {
+                if (item.contains(e.target)) isTarget = true;
+            });
+            tooltips.forEach(tip => {
+                if (tip.contains(e.target)) isTarget = true;
+            });
+            if (!isTarget) {
+                closeAllTooltips();
+            }
+        });
+
+        // 关闭模态框时同时关闭工具提示
+        const originalCloseModal = closeModal;
+        closeModal = function(id) {
+            originalCloseModal(id);
+            closeAllTooltips();
+        };
+        // 重写overlay关闭逻辑
+        overlays.forEach(overlay => {
+            overlay.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModal(this.id);
+                }
+            });
+        });
+        // 重新绑定关闭按钮
+        closeBtns.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const modalId = this.dataset.close;
+                if (modalId) closeModal(modalId);
+            });
+        });
+
+        console.log('大陆介绍页面已加载。鼠标悬停选项显示详情，移开自动消失，也可点击关闭按钮。');
+    })();
+</script>
+</body>
+</html>
