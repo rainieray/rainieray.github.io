@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>种族简介 · 九谕传说</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0d0e12;
+            color: #e8e6e3;
+            font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            padding: 2rem 1.5rem;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* ===== 返回导航 ===== */
+        .back-nav {
+            margin-bottom: 2rem;
+        }
+        .back-nav a {
+            color: #b8a788;
+            text-decoration: none;
+            font-size: 0.95rem;
+            border: 1px solid #2a2e38;
+            padding: 0.4rem 1.2rem;
+            border-radius: 30px;
+            transition: 0.2s;
+            display: inline-block;
+        }
+        .back-nav a:hover {
+            background: #1e222b;
+            border-color: #b8a788;
+        }
+        .back-nav a i {
+            margin-right: 0.5rem;
+        }
+
+        /* ===== 页面标题 ===== */
+        .page-header {
+            border-bottom: 1px solid #2a2c33;
+            padding-bottom: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        .page-header h1 {
+            font-size: 2.4rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            color: #f2e9d0;
+        }
+        .page-header h1 i {
+            color: #b8a788;
+            margin-right: 0.8rem;
+        }
+        .page-header .sub {
+            color: #9a9a9a;
+            font-size: 1rem;
+            margin-top: 0.3rem;
+        }
+
+        /* ===== 纵向种族卡片 ===== */
+        .race-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .race-card {
+            background: #14181f;
+            border-radius: 18px;
+            padding: 1.5rem 2rem;
+            border: 1px solid #282d36;
+            transition: 0.2s ease;
+        }
+        .race-card:hover {
+            border-color: #b8a788;
+            background: #1a1e27;
+        }
+
+        /* 标题行：种族名 + 代号 */
+        .race-header {
+            display: flex;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 0.4rem 1rem;
+            margin-bottom: 0.3rem;
+        }
+        .race-name {
+            font-size: 1.8rem;
+            font-weight: 500;
+            color: #e6dcc8;
+            letter-spacing: 0.5px;
+        }
+        .race-epithet {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #b8a788;          /* 代号变色 */
+            letter-spacing: 0.3px;
+        }
+
+        /* 正文描述（白色） */
+        .race-desc {
+            color: #ffffff;
+            font-size: 1rem;
+            line-height: 1.7;
+            margin: 0.3rem 0 0.8rem 0;
+            padding-right: 0.5rem;
+        }
+
+        /* 关系区域 */
+        .race-relations {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem 1.8rem;
+            border-top: 1px dashed #2b2f38;
+            padding-top: 0.8rem;
+            margin-top: 0.2rem;
+            font-size: 0.9rem;
+        }
+        .race-relations .rel-item {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .race-relations .rel-label {
+            color: #8a8a8a;
+            font-weight: 400;
+        }
+        .race-relations .rel-value {
+            color: #d0cbc0;
+        }
+        .race-relations .rel-value i {
+            margin: 0 0.15rem;
+            font-size: 0.7rem;
+            color: #5d5d5d;
+        }
+
+        /* 响应式 */
+        @media (max-width: 700px) {
+            .page-header h1 { font-size: 1.8rem; }
+            .race-card { padding: 1.2rem 1.2rem; }
+            .race-name { font-size: 1.5rem; }
+            .race-epithet { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- ===== 返回导航 ===== -->
+    <div class="back-nav">
+        <a href="index.html"><i class="fas fa-arrow-left"></i> 返回主页</a>
+    </div>
+
+    <!-- ===== 页面标题 ===== -->
+    <div class="page-header">
+        <h1><i class="fas fa-users"></i> 种族简介</h1>
+        <div class="sub">七大种族 · 代号 · 关系网络</div>
+    </div>
+
+    <!-- ===== 纵向种族列表 ===== -->
+    <div class="race-list">
+
+        <!-- 1. 人类 -->
+        <div class="race-card">
+            <div class="race-header">
+                <span class="race-name">人类</span>
+                <span class="race-epithet">【冒险家】</span>
+            </div>
+            <div class="race-desc">
+                基数庞大的、勤劳的种族，原始兽人种族迁移，长期与所有种族交融发展演化而成的种族，建立有一套完整的社会体系，凭借着自己的智慧在九域联盟中占据一席之地。由于人类遍布九域大陆各处，比起其他种族，人类对于不同种族文化的接受程度相对较高，但有些时候更倾向兽人的文化习性。<br>
+在七大种族共荣共生的种族联盟中，与其说是由人类推动多方发展，不如说是兽人、精灵和人类对于整个大陆的三方制衡。
+            </div>
+            <div class="race-relations">
+                <span class="rel-item"><span class="rel-label">亲近</span> <span class="rel-value">光明精灵 · 矮人 · 兽人</span></span>
+                <span class="rel-item"><span class="rel-label">中立</span> <span class="rel-value">亡灵 · 黑暗精灵</span></span>
+                <span class="rel-item"><span class="rel-label">厌恶</span> <span class="rel-value">—</span></span>
+            </div>
+        </div>
+
+        <!-- 2. 光明精灵 -->
+        <div class="race-card">
+            <div class="race-header">
+                <span class="race-name">光明精灵</span>
+                <span class="race-epithet">【贵族】</span>
+            </div>
+            <div class="race-desc">
+                创世神第一造物，擅长光明魔法。与黑暗精灵为世仇，普遍夜盲。
+            </div>
+            <div class="race-relations">
+                <span class="rel-item"><span class="rel-label">亲近</span> <span class="rel-value">人类 · 兽人</span></span>
+                <span class="rel-item"><span class="rel-label">中立</span> <span class="rel-value">矮人 · 侏儒 · 亡灵</span></span>
+                <span class="rel-item"><span class="rel-label">厌恶</span> <span class="rel-value">黑暗精灵</span></span>
+            </div>
+        </div>
+
+        <!-- 3. 黑暗精灵 -->
+        <div class="race-card">
+            <div class="race-header">
+                <span class="race-name">黑暗精灵</span>
+                <span class="race-epithet">【背叛者】</span>
+            </div>
+            <div class="race-desc">
+                被光明精灵驱逐，受黑暗元素污染。银发黑肤血瞳，情绪极少波动。
+            </div>
+            <div class="race-relations">
+                <span class="rel-item"><span class="rel-label">亲近</span> <span class="rel-value">亡灵</span></span>
+                <span class="rel-item"><span class="rel-label">中立</span> <span class="rel-value">矮人 · 侏儒</span></span>
+                <span class="rel-item"><span class="rel-label">厌恶</span> <span class="rel-value">人类 · 光明精灵 · 兽人</span></span>
+            </div>
+        </div>
+
+        <!-- 4. 兽人 -->
+        <div class="race-card">
+            <div class="race-header">
+                <span class="race-name">兽人</span>
+                <span class="race-epithet">【勇者】</span>
+            </div>
+            <div class="race-desc">
+                第二种族，看重血统纯正。混血种受歧视，部落文化丰富。
+            </div>
+            <div class="race-relations">
+                <span class="rel-item"><span class="rel-label">亲近</span> <span class="rel-value">人类 · 光明精灵 · 矮人</span></span>
+                <span class="rel-item"><span class="rel-label">中立</span> <span class="rel-value">黑暗精灵 · 亡灵</span></span>
+                <span class="rel-item"><span class="rel-label">厌恶</span> <span class="rel-value">—</span></span>
+            </div>
+        </div>
+
+        <!-- 5. 矮人 -->
+        <div class="race-card">
+            <div class="race-header">
+                <span class="race-name">矮人</span>
+                <span class="race-epithet">【劳动者】</span>
+            </div>
+            <div class="race-desc">
+                兽人进化，洞穴居住，擅长铸造兵器。酒馆常客。
+            </div>
+            <div class="race-relations">
+                <span class="rel-item"><span class="rel-label">亲近</span> <span class="rel-value">人类 · 光明精灵 · 侏儒</span></span>
+                <span class="rel-item"><span class="rel-label">中立</span> <span class="rel-value">兽人 · 亡灵</span></span>
+                <span class="rel-item"><span class="rel-label">厌恶</span> <span class="rel-value">黑暗精灵</span></span>
+            </div>
+        </div>
+
+        <!-- 6. 侏儒 -->
+        <div class="race-card">
+            <div class="race-header">
+                <span class="race-name">侏儒</span>
+                <span class="race-epithet">【手艺人】</span>
+            </div>
+            <div class="race-desc">
+                由精灵演化，擅长工艺与机械。脾气古怪，与人类分享玩笑。
+            </div>
+            <div class="race-relations">
+                <span class="rel-item"><span class="rel-label">亲近</span> <span class="rel-value">人类 · 兽人 · 矮人</span></span>
+                <span class="rel-item"><span class="rel-label">中立</span> <span class="rel-value">亡灵</span></span>
+                <span class="rel-item"><span class="rel-label">厌恶</span> <span class="rel-value">黑暗精灵</span></span>
+            </div>
+        </div>
+
+        <!-- 7. 亡灵 -->
+        <div class="race-card">
+            <div class="race-header">
+                <span class="race-name">亡灵</span>
+                <span class="race-epithet">【守律人】</span>
+            </div>
+            <div class="race-desc">
+                不死族，不受黑暗元素影响，分支众多（吸血鬼、巫妖等）。寻求安息或永生。
+            </div>
+            <div class="race-relations">
+                <span class="rel-item"><span class="rel-label">亲近</span> <span class="rel-value">黑暗精灵</span></span>
+                <span class="rel-item"><span class="rel-label">中立</span> <span class="rel-value">人类 · 兽人 · 矮人 · 侏儒 · 光明精灵</span></span>
+                <span class="rel-item"><span class="rel-label">厌恶</span> <span class="rel-value">—</span></span>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+</body>
+</html>
