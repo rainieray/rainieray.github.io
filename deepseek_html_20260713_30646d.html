@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>九谕传说 · Ennead Realms</title>
+    <!-- Font Awesome (免费图标库) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0d0e12;
+            color: #e8e6e3;
+            font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            padding: 2rem 1.5rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* 头部 */
+        .hero {
+            text-align: center;
+            padding: 3rem 1rem 2rem;
+            border-bottom: 1px solid #2a2c33;
+            margin-bottom: 2.5rem;
+        }
+
+        .hero h1 {
+            font-size: 3.2rem;
+            font-weight: 300;
+            letter-spacing: 4px;
+            color: #f2e9d0;
+            text-shadow: 0 0 12px rgba(218, 192, 152, 0.2);
+        }
+
+        .hero h1 span {
+            font-weight: 600;
+            color: #d8c8a8;
+        }
+
+        .hero .sub {
+            font-size: 1.1rem;
+            color: #9a9a9a;
+            margin-top: 0.5rem;
+            letter-spacing: 2px;
+        }
+
+        .hero .sub i {
+            margin: 0 0.5rem;
+            color: #b8a788;
+        }
+
+        /* 导航标签 */
+        .nav-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem 0.2rem;
+            margin: 1.8rem 0 2.5rem;
+            border-bottom: 1px solid #2a2c33;
+            padding-bottom: 0.8rem;
+        }
+
+        .nav-tabs a {
+            color: #b0aeaa;
+            text-decoration: none;
+            padding: 0.4rem 1.2rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            background: #191b20;
+            border: 1px solid #2e3138;
+        }
+
+        .nav-tabs a:hover {
+            background: #2f333d;
+            color: #f0e8da;
+            border-color: #b8a788;
+        }
+
+        /* 卡片通用 */
+        .section-title {
+            font-size: 1.9rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            margin: 2.5rem 0 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #32363f;
+            color: #e0d6c0;
+        }
+
+        .section-title i {
+            margin-right: 0.8rem;
+            color: #b8a788;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: #171a20;
+            border-radius: 18px;
+            padding: 1.3rem 1.2rem 1.5rem;
+            border: 1px solid #282d36;
+            transition: 0.2s ease;
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.5);
+        }
+
+        .card:hover {
+            border-color: #b8a788;
+            background: #1e222b;
+            transform: translateY(-3px);
+        }
+
+        .card h3 {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #e6dcc8;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .card h3 i {
+            color: #b8a788;
+            font-size: 1.2rem;
+            width: 1.8rem;
+        }
+
+        .card .subinfo {
+            font-size: 0.75rem;
+            color: #8f8f8f;
+            letter-spacing: 0.3px;
+            border-left: 2px solid #3d414b;
+            padding-left: 0.6rem;
+            margin: 0.4rem 0 0.6rem;
+        }
+
+        .card p {
+            font-size: 0.92rem;
+            color: #cdc9c0;
+            margin: 0.4rem 0;
+        }
+
+        .card .tag {
+            display: inline-block;
+            background: #262c36;
+            color: #bdb8ab;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.7rem;
+            border-radius: 30px;
+            margin: 0.2rem 0.1rem;
+            border: 1px solid #3b404b;
+        }
+
+        .card .muted {
+            color: #8d8d8d;
+            font-size: 0.8rem;
+        }
+
+        .badge-race {
+            display: inline-block;
+            padding: 0.1rem 0.8rem;
+            border-radius: 40px;
+            background: #2f3540;
+            font-size: 0.7rem;
+            color: #cbc3b2;
+            margin-right: 0.3rem;
+        }
+
+        /* 两列布局用于种族关系 */
+        .rel-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.3rem 0.6rem;
+            margin-top: 0.5rem;
+        }
+
+        .rel-item {
+            font-size: 0.8rem;
+            color: #c6bfb0;
+        }
+
+        .rel-item i {
+            width: 1.2rem;
+            color: #8f8a7a;
+        }
+
+        .rel-item .friendly { color: #9fc7a0; }
+        .rel-item .hostile { color: #d18f8a; }
+        .rel-item .neutral { color: #b8b09a; }
+
+        /* 编年史时间线 */
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .timeline-item {
+            background: #14181f;
+            border-left: 3px solid #b8a788;
+            padding: 0.6rem 1rem 0.6rem 1.4rem;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .timeline-item .year {
+            font-weight: 600;
+            color: #decfa8;
+            font-size: 0.9rem;
+        }
+
+        .timeline-item .desc {
+            font-size: 0.9rem;
+            color: #cbc3b4;
+        }
+
+        /* 圣器 */
+        .artifact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+            gap: 1rem;
+        }
+
+        .artifact-card {
+            background: #11151b;
+            border-radius: 30px;
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid #2d323c;
+        }
+
+        .artifact-card h4 {
+            color: #e2d5ba;
+            font-weight: 400;
+            margin-bottom: 0.2rem;
+        }
+
+        .artifact-card p {
+            font-size: 0.75rem;
+            color: #9f9b8f;
+        }
+
+        /* 响应式 */
+        @media (max-width: 700px) {
+            .hero h1 { font-size: 2.2rem; }
+            .grid { grid-template-columns: 1fr; }
+            .rel-grid { grid-template-columns: 1fr; }
+            .artifact-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        footer {
+            margin-top: 4rem;
+            text-align: center;
+            color: #5d5d5d;
+            font-size: 0.8rem;
+            border-top: 1px solid #272b33;
+            padding-top: 2rem;
+            letter-spacing: 0.5px;
+        }
+
+        .inline-icon {
+            margin-right: 6px;
+            color: #b8a788;
+        }
+
+        .small-note {
+            color: #8a867b;
+            font-size: 0.8rem;
+            border-top: 1px dashed #2b2f38;
+            padding-top: 0.8rem;
+            margin-top: 0.8rem;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #2a2e38;
+            margin: 1.8rem 0;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- 头部 -->
+    <div class="hero">
+        <h1>九谕传说 <span>Ennead Realms</span></h1>
+        <div class="sub">
+            <i class="fas fa-scroll"></i> 七大种族 · 九块大陆 · 八大圣器 <i class="fas fa-dragon"></i>
+        </div>
+        <div style="margin-top: 1rem; font-size: 0.9rem; color: #b0a896;">
+            <i class="fas fa-circle" style="color:#b8a788; font-size: 0.5rem; vertical-align: middle;"></i> 神话纪元 · 发展纪元 · 灾变纪元 · 混乱纪元 · 新纪元
+        </div>
+    </div>
+
+    <!-- 导航占位 (纯视觉) -->
+    <div class="nav-tabs">
+        <a href="#"><i class="fas fa-globe"></i> 世界</a>
+        <a href="#"><i class="fas fa-users"></i> 种族</a>
+        <a href="#"><i class="fas fa-map"></i> 地理</a>
+        <a href="#"><i class="fas fa-clock"></i> 编年史</a>
+        <a href="#"><i class="fas fa-gem"></i> 圣器</a>
+        <a href="#"><i class="fas fa-user"></i> 角色</a>
+    </div>
+
+    <!-- ========= 种族概览 ========= -->
+    <h2 class="section-title"><i class="fas fa-flag"></i> 七大种族 · 九域众生</h2>
+    <div class="grid">
+        <!-- 人类 -->
+        <div class="card">
+            <h3><i class="fas fa-user"></i> 人类</h3>
+            <div class="subinfo">野心家 · 基数庞大</div>
+            <p>由兽人迁移演化，遍布九域。建立完整社会体系，与兽人、精灵形成三方制衡。</p>
+            <div><span class="tag">友好：光明精灵</span><span class="tag">矮人</span><span class="tag">兽人</span></div>
+            <div class="small-note"><i class="fas fa-skull"></i> 中立：亡灵 · 黑暗精灵</div>
+        </div>
+        <!-- 光明精灵 -->
+        <div class="card">
+            <h3><i class="fas fa-tree"></i> 光明精灵</h3>
+            <div class="subinfo">贵族 · 古老高傲</div>
+            <p>创世神第一造物，擅长光明魔法。与黑暗精灵为世仇，普遍夜盲。</p>
+            <div><span class="tag">友好：人类</span><span class="tag">兽人</span></div>
+            <div class="small-note"><i class="fas fa-skull"></i> 仇恨：黑暗精灵</div>
+        </div>
+        <!-- 黑暗精灵 -->
+        <div class="card">
+            <h3><i class="fas fa-moon"></i> 黑暗精灵</h3>
+            <div class="subinfo">背叛者 · 避世冷漠</div>
+            <p>被光明精灵驱逐，受黑暗元素污染。银发黑肤血瞳，情绪极少波动。</p>
+            <div><span class="tag">中立：亡灵</span><span class="tag">矮人</span><span class="tag">侏儒</span></div>
+            <div class="small-note"><i class="fas fa-skull"></i> 仇恨：人类 · 光明精灵 · 兽人</div>
+        </div>
+        <!-- 兽人 -->
+        <div class="card">
+            <h3><i class="fas fa-paw"></i> 兽人</h3>
+            <div class="subinfo">冒险家 · 勇敢矫健</div>
+            <p>第二种族，看重血统纯正。混血种受歧视，部落文化丰富。</p>
+            <div><span class="tag">友好：人类</span><span class="tag">光明精灵</span><span class="tag">矮人</span></div>
+            <div class="small-note"><i class="fas fa-skull"></i> 中立：黑暗精灵 · 亡灵</div>
+        </div>
+        <!-- 矮人 -->
+        <div class="card">
+            <h3><i class="fas fa-hammer"></i> 矮人</h3>
+            <div class="subinfo">劳动者 · 朴实忠诚</div>
+            <p>兽人进化，洞穴居住，擅长铸造兵器。酒馆常客。</p>
+            <div><span class="tag">友好：人类</span><span class="tag">光明精灵</span><span class="tag">侏儒</span></div>
+            <div class="small-note"><i class="fas fa-skull"></i> 仇恨：黑暗精灵</div>
+        </div>
+        <!-- 侏儒 -->
+        <div class="card">
+            <h3><i class="fas fa-cogs"></i> 侏儒</h3>
+            <div class="subinfo">手艺人 · 风趣智慧</div>
+            <p>由精灵演化，擅长工艺与机械。脾气古怪，与人类分享玩笑。</p>
+            <div><span class="tag">友好：人类</span><span class="tag">兽人</span><span class="tag">矮人</span></div>
+            <div class="small-note"><i class="fas fa-skull"></i> 仇恨：黑暗精灵</div>
+        </div>
+        <!-- 亡灵 -->
+        <div class="card">
+            <h3><i class="fas fa-ghost"></i> 亡灵</h3>
+            <div class="subinfo">守律人 · 孤独被诅咒</div>
+            <p>不死族，不受黑暗元素影响，分支众多（吸血鬼、巫妖等）。寻求安息或永生。</p>
+            <div><span class="tag">友好：黑暗精灵</span></div>
+            <div class="small-note"><i class="fas fa-skull"></i> 中立：人类 · 兽人 · 矮人 · 侏儒 · 光明精灵</div>
+        </div>
+    </div>
+
+    <!-- ========= 地理 / 九域 ========= -->
+    <h2 class="section-title"><i class="fas fa-map-marked-alt"></i> 九块大陆 · 地貌与城邦</h2>
+    <div class="grid">
+        <div class="card"><h3><i class="fas fa-city"></i> 中央 · 中主城</h3><p>权力中心，上中下城区。生命树、创世神旧址、联盟议会、贵族学院、地下黑市。</p></div>
+        <div class="card"><h3><i class="fas fa-mountain"></i> 北 · 沃卡诺雪山</h3><p>永恒神殿，圣狱冰灯。终年暴风雪，火山封印，冒险者村落。</p></div>
+        <div class="card"><h3><i class="fas fa-tree"></i> 东 · 光黯森林</h3><p>精灵家园，魔法分割为永夜与白昼。精灵王庭 · 辉月湖泊。</p></div>
+        <div class="card"><h3><i class="fas fa-water"></i> 西 · 环岸群岛</h3><p>人鱼传说，沉海旧址，卡律布狄斯号游轮，海洋兽人。</p></div>
+        <div class="card"><h3><i class="fas fa-tint"></i> 西南 · 蒸汽群山</h3><p>矮人侏儒国度，机械之城，蒸汽朋克，遗址。</p></div>
+        <div class="card"><h3><i class="fas fa-wind"></i> 东南 · 风息草原</h3><p>兽族摇篮，月舞高台，栖地湖畔，祭典。</p></div>
+        <div class="card"><h3><i class="fas fa-flask"></i> 东北 · 巫师山脉</h3><p>巫师塔，实验基地，巫师集会，传送阵。</p></div>
+        <div class="card"><h3><i class="fas fa-sun"></i> 西北 · 金穗之谷</h3><p>冒险者公会总部，橡木桶酒馆，地下城入口。</p></div>
+        <div class="card"><h3><i class="fas fa-desert"></i> 南 · 热浪沙漠</h3><p>神秘封印大门，热浪小镇，美食之都。</p></div>
+        <div class="card"><h3><i class="fas fa-umbrella"></i> 浮空岛 · 遗忘之地</h3><p>空岛猎手，流放罪民，海盗飞船。</p></div>
+        <div class="card"><h3><i class="fas fa-skull"></i> 黑暗大陆</h3><p>大陆反面，黑暗法师据点，异兽寂谷，巨人遗址，黑暗神封印。</p></div>
+    </div>
+
+    <!-- ========= 编年史 简略 ========= -->
+    <h2 class="section-title"><i class="fas fa-history"></i> 编年史 · 纪元回响</h2>
+    <div class="timeline">
+        <div class="timeline-item"><span class="year">神话纪元 · 神创三族</span><div class="desc">创世神创造精灵、兽人、巨人。伪神之战巨人灭亡。种族迁移。</div></div>
+        <div class="timeline-item"><span class="year">发展纪元 · 光裔审判 & 分裂</span><div class="desc">黑暗精灵崛起，光裔审判，分裂战争，六大种族形成。</div></div>
+        <div class="timeline-item"><span class="year">灾变纪元 · 亡灵与裂变</span><div class="desc">黑暗神影响，亡灵诞生，大陆裂为九块。</div></div>
+        <div class="timeline-item"><span class="year">混乱纪元 · 种族战争 & 终神之战</span><div class="desc">种族冲突，黑暗神入侵，七大圣器联合，封印黑暗神。</div></div>
+        <div class="timeline-item"><span class="year">新纪元 · 九域联盟</span><div class="desc">种族友好协议，人类主导，资源共享，共同发展。</div></div>
+    </div>
+
+    <!-- ========= 八大圣器 ========= -->
+    <h2 class="section-title"><i class="fas fa-gem"></i> 八大圣器 · 神赐之物</h2>
+    <div class="artifact-grid">
+        <div class="artifact-card"><h4>圣狱冰灯</h4><p>免疫火焰，供奉于永恒神殿。</p></div>
+        <div class="artifact-card"><h4>天律权杖</h4><p>无需吟诵施法，下落不明。</p></div>
+        <div class="artifact-card"><h4>寂暗铃</h4><p>压制黑暗情绪，被黑暗精灵夺走。</p></div>
+        <div class="artifact-card"><h4>双面颂</h4><p>兽族战鼓，祭祀使用。</p></div>
+        <div class="artifact-card"><h4>无名之剑</h4><p>斩断元素魔法，仅绝缘者可用。</p></div>
+        <div class="artifact-card"><h4>全晓之映</h4><p>映照疑惑，传说在山洞中。</p></div>
+        <div class="artifact-card"><h4>鲛人泪</h4><p>起死回生，复活生命树。</p></div>
+        <div class="artifact-card"><h4>勇者桂冠</h4><p>三次免死，冒险者公会奖品。</p></div>
+    </div>
+    <div style="margin-top: 1rem; font-size:0.9rem; color:#b0a896;"><i class="fas fa-leaf"></i> 生命树之心 · 创世神心脏，封印支柱。</div>
+
+    <!-- ========= 角色速写 ========= -->
+    <h2 class="section-title"><i class="fas fa-user-astronaut"></i> 关键人物 · 命运交织</h2>
+    <div class="grid">
+        <div class="card"><h3><i class="fas fa-dog"></i> 萨洛米</h3><p>兽人混血（胡狼+蛇），情报贩子，与妹妹相依为命。</p><span class="tag">贫民窟</span><span class="tag">圆滑</span></div>
+        <div class="card"><h3><i class="fas fa-hammer"></i> 法格里姆</h3><p>矮人侏儒混血，铁匠铺学徒，伪善狡诈。</p><span class="tag">蒸汽群山</span><span class="tag">手艺</span></div>
+        <div class="card"><h3><i class="fas fa-star"></i> 塔丽莉卡</h3><p>人类赏金猎人，十大之一，身世成谜。</p><span class="tag">金穗之谷</span><span class="tag">金色弯刀</span></div>
+        <div class="card"><h3><i class="fas fa-skull"></i> 苏尔</h3><p>亡灵巫妖，活2500年，渴望死亡。</p><span class="tag">巫师山脉</span><span class="tag">实验基地</span></div>
+        <div class="card"><h3><i class="fas fa-fish"></i> 埃莉安娜</h3><p>人鱼公主，海洋王国继承人，天真温柔。</p><span class="tag">环岸群岛</span><span class="tag">海神</span></div>
+        <div class="card"><h3><i class="fas fa-graduation-cap"></i> 瑞伊</h3><p>贵族学院生，无战力但智慧过人，家族秘密。</p><span class="tag">中主城</span><span class="tag">布瑞弗家族</span></div>
+        <div class="card"><h3><i class="fas fa-moon"></i> 卡洛</h3><p>黑暗精灵王子，矜贵毒舌，成年在即。</p><span class="tag">光黯森林</span><span class="tag">和平</span></div>
+        <div class="card"><h3><i class="fas fa-snowflake"></i> 伊利安</h3><p>光明精灵神官，圣器守护者，雪山永恒神殿。</p><span class="tag">沃卡诺</span><span class="tag">预言</span></div>
+        <div class="card"><h3><i class="fas fa-bow-arrow"></i> 莉瑞尔</h3><p>光明精灵骑士团长，忠诚正义。</p><span class="tag">精灵王庭</span><span class="tag">女王</span></div>
+    </div>
+
+    <!-- ========= 其他重要设定 ========= -->
+    <div style="margin-top: 2.5rem; display: flex; flex-wrap: wrap; gap: 1.5rem; justify-content: space-between;">
+        <div style="flex: 1; min-width: 200px; background: #14181f; border-radius: 30px; padding: 1.2rem 1.5rem;">
+            <h4 style="color:#d6ccb4;"><i class="fas fa-coins"></i> 货币</h4>
+            <p>1 金币 = 100 元 · 1 银币 = 20 元 · 1 铜币 = 2 元</p>
+        </div>
+        <div style="flex: 1; min-width: 200px; background: #14181f; border-radius: 30px; padding: 1.2rem 1.5rem;">
+            <h4 style="color:#d6ccb4;"><i class="fas fa-trophy"></i> 赏金猎人榜</h4>
+            <p>阿黛拉 · 奥兰多 · 弗雷德里克 · 查尔斯 · 莉迪娅 · 琼 · 约书亚 · 艾玛 · 艾德蒙 · 塔丽莉卡 · 阿克塞尔</p>
+        </div>
+        <div style="flex: 1; min-width: 200px; background: #14181f; border-radius: 30px; padding: 1.2rem 1.5rem;">
+            <h4 style="color:#d6ccb4;"><i class="fas fa-calendar-alt"></i> 猎榜盛典</h4>
+            <p>五年一度，金穗之谷，六月开始持续一月。</p>
+        </div>
+    </div>
+
+    <!-- 权力 · 宗教 -->
+    <div style="margin-top: 2rem; background: #12161d; border-radius: 30px; padding: 1.5rem;">
+        <div style="display: flex; flex-wrap: wrap; gap: 1.2rem; justify-content: space-around;">
+            <div><i class="fas fa-gavel" style="color:#b8a788;"></i> <strong>权力之环</strong> · 各族代表 + 议会 (147人)</div>
+            <div><i class="fas fa-church" style="color:#b8a788;"></i> <strong>信仰</strong> · 创世神宗教 (联盟唯一承认)</div>
+            <div><i class="fas fa-balance-scale" style="color:#b8a788;"></i> <strong>审判庭</strong> · 多种族法官，亡灵可任</div>
+        </div>
+        <div style="margin-top: 0.8rem; color:#9a9587; font-size:0.9rem;"><i class="fas fa-book-open"></i> 光明魔法 · 沟通元素；黑暗魔法 · 夺取元素。黑暗精灵、亡灵为特殊存在。</div>
+    </div>
+
+    <footer>
+        <i class="fas fa-scroll"></i> 九谕传说 · Ennead Realms · 由创世神编织的史诗 <i class="fas fa-dragon"></i><br>
+        <span style="color:#4f4f4f;">设定基于原创世界观 · 七大种族 · 九域 · 八大圣器 · 黑暗与光明的永恒回响</span>
+    </footer>
+
+</div>
+</body>
+</html>
