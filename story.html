@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>九谕传说 · 正文阅读器</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #0d0e12;
+            color: #e8e6e3;
+            font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+            line-height: 1.8;
+            padding: 2rem 1.5rem;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* ===== 返回导航 ===== */
+        .back-nav { margin-bottom: 2rem; }
+        .back-nav a {
+            color: #b8a788;
+            text-decoration: none;
+            font-size: 0.95rem;
+            border: 1px solid #2a2e38;
+            padding: 0.4rem 1.2rem;
+            border-radius: 30px;
+            transition: 0.2s;
+            display: inline-block;
+        }
+        .back-nav a:hover { background: #1e222b; border-color: #b8a788; }
+        .back-nav a i { margin-right: 0.5rem; }
+
+        /* ===== 页面标题 ===== */
+        .page-header {
+            border-bottom: 1px solid #2a2c33;
+            padding-bottom: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        .page-header h1 {
+            font-size: 2.4rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            color: #f2e9d0;
+        }
+        .page-header h1 i { color: #b8a788; margin-right: 0.8rem; }
+        .page-header .sub {
+            color: #9a9a9a;
+            font-size: 1rem;
+            margin-top: 0.3rem;
+        }
+
+        /* ===== 目录区域 ===== */
+        .toc-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        /* 卷板块 */
+        .volume-item {
+            background: #14181f;
+            border-radius: 16px;
+            border: 1px solid #282d36;
+            overflow: hidden;
+            transition: 0.2s;
+        }
+        .volume-item:hover { border-color: #3a3f4a; }
+
+        .volume-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            transition: 0.2s;
+            user-select: none;
+        }
+        .volume-header:hover { background: #1a1e27; }
+        .volume-header .vol-name {
+            font-size: 1.15rem;
+            font-weight: 400;
+            color: #e6dcc8;
+        }
+        .volume-header .vol-name i {
+            color: #b8a788;
+            margin-right: 0.6rem;
+        }
+        .volume-header .vol-count {
+            font-size: 0.8rem;
+            color: #7a7a7a;
+            margin-right: 1rem;
+        }
+        .volume-header .toggle-icon {
+            color: #b8a788;
+            transition: transform 0.3s;
+            font-size: 1.1rem;
+        }
+        .volume-header .toggle-icon.open { transform: rotate(180deg); }
+
+        /* 章节列表（折叠） */
+        .chapter-list {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+            background: #0d1117;
+            border-top: 1px solid transparent;
+        }
+        .chapter-list.open {
+            max-height: 2000px;
+            border-top-color: #282d36;
+        }
+
+        .chapter-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.6rem 1.5rem 0.6rem 2.5rem;
+            cursor: pointer;
+            transition: 0.15s;
+            border-bottom: 1px solid #1a1e27;
+            color: #c0b8a8;
+        }
+        .chapter-item:last-child { border-bottom: none; }
+        .chapter-item:hover {
+            background: #1a1e27;
+            color: #f2e9d0;
+        }
+        .chapter-item .ch-name {
+            font-size: 0.95rem;
+        }
+        .chapter-item .ch-name i {
+            color: #5d5d5d;
+            margin-right: 0.5rem;
+            font-size: 0.7rem;
+        }
+        .chapter-item .ch-status {
+            font-size: 0.7rem;
+            color: #5d5d5d;
+        }
+        .chapter-item .ch-status.has-content { color: #6a8a6a; }
+        .chapter-item .ch-status.empty { color: #5d5d5d; }
+
+        /* ===== 正文阅读区域 ===== */
+        .reading-area {
+            margin-top: 2rem;
+            background: #14181f;
+            border-radius: 18px;
+            border: 1px solid #282d36;
+            padding: 2rem 2.5rem;
+            min-height: 200px;
+            display: none;
+        }
+        .reading-area.active { display: block; }
+
+        .reading-area .reading-title {
+            font-size: 1.6rem;
+            font-weight: 400;
+            color: #e6dcc8;
+            text-align: center;
+            border-bottom: 1px solid #2a2e38;
+            padding-bottom: 0.8rem;
+            margin-bottom: 1.2rem;
+        }
+        .reading-area .reading-body {
+            color: #d0cbc0;
+            font-size: 1.05rem;
+            line-height: 2;
+        }
+        .reading-area .reading-body p { margin-bottom: 1rem; }
+        .reading-area .reading-body .empty-hint {
+            text-align: center;
+            color: #7a7a7a;
+            padding: 2rem;
+        }
+
+        .reading-area .reading-close {
+            display: inline-block;
+            margin-top: 1.2rem;
+            color: #7a7a7a;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: 0.2s;
+            border-top: 1px solid #2a2e38;
+            padding-top: 1rem;
+            width: 100%;
+            text-align: center;
+        }
+        .reading-area .reading-close:hover { color: #e8e6e3; }
+
+        /* ===== 加载状态 ===== */
+        .loading-state {
+            text-align: center;
+            padding: 3rem;
+            color: #7a7a7a;
+        }
+        .loading-state i { font-size: 2rem; display: block; margin-bottom: 1rem; }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 700px) {
+            .volume-header { padding: 0.8rem 1rem; }
+            .volume-header .vol-name { font-size: 1rem; }
+            .chapter-item { padding: 0.5rem 1rem 0.5rem 1.5rem; }
+            .reading-area { padding: 1.2rem; }
+            .page-header h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- ===== 导航 ===== -->
+    <div class="back-nav">
+        <a href="index.html"><i class="fas fa-arrow-left"></i> 返回主页</a>
+    </div>
+
+    <!-- ===== 标题 ===== -->
+    <div class="page-header">
+        <h1><i class="fas fa-book-open"></i> 正文 · 九谕传说</h1>
+        <div class="sub" id="statusInfo">正在加载目录...</div>
+    </div>
+
+    <!-- ===== 目录 ===== -->
+    <div class="toc-container" id="tocContainer">
+        <div class="loading-state">
+            <i class="fas fa-spinner fa-pulse"></i>
+            正在解析正文...
+        </div>
+    </div>
+
+    <!-- ===== 正文阅读区 ===== -->
+    <div class="reading-area" id="readingArea">
+        <div class="reading-title" id="readingTitle">章节标题</div>
+        <div class="reading-body" id="readingBody"></div>
+        <div class="reading-close" onclick="closeReading()">
+            <i class="fas fa-times"></i> 关闭阅读
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // ============================================================
+    //  核心逻辑：解析 story.txt，生成 卷 → 章 → 正文 三级结构
+    //  标记规则：
+    //    # 卷名          → 一级标题（卷）
+    //    ## 章名         → 二级标题（章）
+    //    普通文本        → 正文内容（属于当前章）
+    //    空行            → 段落分隔
+    // ============================================================
+
+    const TOC = document.getElementById('tocContainer');
+    const READING = document.getElementById('readingArea');
+    const TITLE = document.getElementById('readingTitle');
+    const BODY = document.getElementById('readingBody');
+    const STATUS = document.getElementById('statusInfo');
+
+    // 存储解析后的数据
+    let volumes = [];
+    let allChapters = [];
+
+    // ===== 解析 TXT =====
+    function parseStory(text) {
+        const lines = text.split('\n');
+        const result = [];
+        let currentVol = null;
+        let currentChap = null;
+        let currentContent = [];
+
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+            const trimmed = line.trim();
+
+            // 跳过空行（但保留用于段落分隔）
+            if (trimmed === '') {
+                if (currentChap) {
+                    currentContent.push(''); // 空行作为段落分隔标记
+                }
+                continue;
+            }
+
+            // 检测卷标题：# 开头
+            if (trimmed.startsWith('# ') && !trimmed.startsWith('## ')) {
+                // 保存当前章
+                if (currentChap) {
+                    currentChap.content = currentContent.join('\n').trim();
+                    currentVol.chapters.push(currentChap);
+                    currentContent = [];
+                }
+                // 创建新卷
+                const volName = trimmed.substring(2).trim();
+                currentVol = {
+                    name: volName,
+                    chapters: []
+                };
+                result.push(currentVol);
+                currentChap = null;
+                continue;
+            }
+
+            // 检测章标题：## 开头
+            if (trimmed.startsWith('## ')) {
+                // 保存当前章
+                if (currentChap) {
+                    currentChap.content = currentContent.join('\n').trim();
+                    if (currentVol) {
+                        currentVol.chapters.push(currentChap);
+                    }
+                    currentContent = [];
+                }
+                // 创建新章
+                const chapName = trimmed.substring(3).trim();
+                currentChap = {
+                    name: chapName,
+                    content: '',
+                    volume: currentVol ? currentVol.name : '未分类'
+                };
+                continue;
+            }
+
+            // 普通文本行 → 加入当前章内容
+            if (currentChap) {
+                currentContent.push(trimmed);
+            } else {
+                // 如果还没有章，但又有文本（格式错误），创建默认章
+                if (!currentVol) {
+                    currentVol = { name: '未分类', chapters: [] };
+                    result.push(currentVol);
+                }
+                currentChap = {
+                    name: '未命名章节',
+                    content: '',
+                    volume: currentVol.name
+                };
+                currentContent.push(trimmed);
+            }
+        }
+
+        // 保存最后一个章
+        if (currentChap) {
+            currentChap.content = currentContent.join('\n').trim();
+            if (currentVol) {
+                currentVol.chapters.push(currentChap);
+            }
+        }
+
+        return result;
+    }
+
+    // ===== 渲染目录 =====
+    function renderTOC(volumes) {
+        if (!volumes || volumes.length === 0) {
+            TOC.innerHTML = `
+                <div style="text-align:center;padding:2rem;color:#7a7a7a;">
+                    <i class="fas fa-feather" style="font-size:2rem;display:block;margin-bottom:1rem;"></i>
+                    暂无正文内容<br>
+                    <span style="font-size:0.9rem;">请在 story.txt 中添加内容，使用 # 标记卷，## 标记章</span>
+                </div>
+            `;
+            STATUS.textContent = '暂无内容';
+            return;
+        }
+
+        let html = '';
+        let totalChaps = 0;
+
+        volumes.forEach((vol, volIndex) => {
+            const chapCount = vol.chapters.length;
+            totalChaps += chapCount;
+
+            html += `
+                <div class="volume-item">
+                    <div class="volume-header" onclick="toggleVolume(this)">
+                        <span class="vol-name"><i class="fas fa-book"></i> ${vol.name}</span>
+                        <span style="display:flex;align-items:center;gap:0.5rem;">
+                            <span class="vol-count">${chapCount} 章</span>
+                            <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                        </span>
+                    </div>
+                    <div class="chapter-list">
+            `;
+
+            vol.chapters.forEach((chap, chapIndex) => {
+                const hasContent = chap.content && chap.content.length > 0;
+                const statusClass = hasContent ? 'has-content' : 'empty';
+                const statusIcon = hasContent ? 'fa-check-circle' : 'fa-minus-circle';
+                const statusText = hasContent ? '可读' : '空章';
+
+                // 生成唯一ID用于定位
+                const chapId = `chap-${volIndex}-${chapIndex}`;
+
+                html += `
+                    <div class="chapter-item" onclick="loadChapter('${chapId}')" id="${chapId}">
+                        <span class="ch-name"><i class="fas fa-caret-right"></i> ${chap.name}</span>
+                        <span class="ch-status ${statusClass}">
+                            <i class="fas ${statusIcon}"></i> ${statusText}
+                        </span>
+                    </div>
+                `;
+            });
+
+            html += `
+                    </div>
+                </div>
+            `;
+        });
+
+        TOC.innerHTML = html;
+        STATUS.textContent = `共 ${volumes.length} 卷，${totalChaps} 章`;
+
+        // 默认展开第一卷
+        const firstVol = document.querySelector('.volume-item');
+        if (firstVol) {
+            const header = firstVol.querySelector('.volume-header');
+            if (header) toggleVolume(header);
+        }
+    }
+
+    // ===== 切换卷展开/折叠 =====
+    function toggleVolume(headerEl) {
+        const list = headerEl.nextElementSibling;
+        const icon = headerEl.querySelector('.toggle-icon i');
+        if (list.classList.contains('open')) {
+            list.classList.remove('open');
+            if (icon) icon.classList.remove('open');
+        } else {
+            list.classList.add('open');
+            if (icon) icon.classList.add('open');
+        }
+    }
+
+    // ===== 加载章节内容 =====
+    function loadChapter(chapId) {
+        const el = document.getElementById(chapId);
+        if (!el) return;
+
+        // 获取章名
+        const nameEl = el.querySelector('.ch-name');
+        const chapName = nameEl ? nameEl.textContent.trim() : '未知章节';
+
+        // 查找对应章节数据
+        let foundChap = null;
+        for (const vol of volumes) {
+            for (const chap of vol.chapters) {
+                if (chap.name === chapName) {
+                    foundChap = chap;
+                    break;
+                }
+            }
+            if (foundChap) break;
+        }
+
+        if (!foundChap) {
+            BODY.innerHTML = '<div class="empty-hint">未找到章节内容</div>';
+            TITLE.textContent = chapName;
+            READING.classList.add('active');
+            READING.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            return;
+        }
+
+        // 渲染正文
+        TITLE.textContent = `${foundChap.volume} · ${foundChap.name}`;
+
+        if (!foundChap.content || foundChap.content.trim() === '') {
+            BODY.innerHTML = `
+                <div class="empty-hint">
+                    <i class="fas fa-pen" style="display:block;font-size:1.5rem;margin-bottom:0.5rem;"></i>
+                    本章内容尚未编写...
+                </div>
+            `;
+        } else {
+            // 将文本转换为段落
+            const paragraphs = foundChap.content.split(/\n\s*\n/);
+            let html = '';
+            paragraphs.forEach(p => {
+                const trimmed = p.trim();
+                if (trimmed) {
+                    // 保留段落内的换行
+                    const lines = trimmed.split('\n');
+                    if (lines.length === 1) {
+                        html += `<p>${lines[0]}</p>`;
+                    } else {
+                        html += `<p>${lines.join('<br>')}</p>`;
+                    }
+                }
+            });
+            BODY.innerHTML = html;
+        }
+
+        READING.classList.add('active');
+        READING.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        // 高亮当前章节
+        document.querySelectorAll('.chapter-item').forEach(item => {
+            item.style.background = '';
+            item.style.color = '';
+        });
+        el.style.background = '#1a1e27';
+        el.style.color = '#f2e9d0';
+    }
+
+    // ===== 关闭阅读 =====
+    function closeReading() {
+        READING.classList.remove('active');
+        document.querySelectorAll('.chapter-item').forEach(item => {
+            item.style.background = '';
+            item.style.color = '';
+        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ===== 加载 story.txt =====
+    function loadStory() {
+        fetch('story.txt')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('story.txt 文件未找到');
+                }
+                return response.text();
+            })
+            .then(text => {
+                if (!text.trim()) {
+                    TOC.innerHTML = `
+                        <div style="text-align:center;padding:2rem;color:#7a7a7a;">
+                            <i class="fas fa-feather" style="font-size:2rem;display:block;margin-bottom:1rem;"></i>
+                            story.txt 为空，请开始编写您的故事！<br>
+                            <span style="font-size:0.9rem;">使用 # 卷名 和 ## 章名 来组织内容</span>
+                        </div>
+                    `;
+                    STATUS.textContent = '空文件';
+                    return;
+                }
+
+                volumes = parseStory(text);
+                allChapters = [];
+                volumes.forEach(vol => {
+                    vol.chapters.forEach(chap => {
+                        allChapters.push(chap);
+                    });
+                });
+                renderTOC(volumes);
+            })
+            .catch(error => {
+                TOC.innerHTML = `
+                    <div style="text-align:center;padding:2rem;color:#b8a788;">
+                        <i class="fas fa-exclamation-triangle" style="font-size:2rem;display:block;margin-bottom:1rem;"></i>
+                        ${error.message}<br>
+                        <span style="color:#7a7a7a;font-size:0.9rem;">
+                            请在同目录下创建 <strong>story.txt</strong> 文件
+                        </span>
+                    </div>
+                `;
+                STATUS.textContent = '加载失败';
+                console.error('加载失败:', error);
+            });
+    }
+
+    // ===== 启动 =====
+    loadStory();
+</script>
+
+</body>
+</html>
