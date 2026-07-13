@@ -171,7 +171,7 @@
             margin-right: 0.2rem;
         }
 
-        /* ===== 弹窗（模态框） ===== */
+        /* ===== 弹窗（模态框）- 统一风格 ===== */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -315,9 +315,9 @@
             <div class="artifact-hint"><i class="fas fa-mouse-pointer"></i> 点击详情</div>
         </div>
 
-        <!-- 2. 天律法杖 -->
+        <!-- 2. 天律法杖 (补图标) -->
         <div class="artifact-card" data-modal="modal-law-staff">
-            <div class="artifact-icon"><i class="fas fa-staff"></i></div>
+            <div class="artifact-icon"><i class="fas fa-wand-magic-sparkles"></i></div>
             <div class="artifact-name">天律法杖</div>
             <div class="artifact-hint"><i class="fas fa-mouse-pointer"></i> 点击详情</div>
         </div>
@@ -336,9 +336,9 @@
             <div class="artifact-hint"><i class="fas fa-mouse-pointer"></i> 点击详情</div>
         </div>
 
-        <!-- 5. 无名之剑 -->
+        <!-- 5. 无名之剑 (补图标) -->
         <div class="artifact-card" data-modal="modal-nameless-sword">
-            <div class="artifact-icon"><i class="fas fa-sword"></i></div>
+            <div class="artifact-icon"><i class="fas fa-khanda"></i></div>
             <div class="artifact-name">无名之剑</div>
             <div class="artifact-hint"><i class="fas fa-mouse-pointer"></i> 点击详情</div>
         </div>
@@ -364,7 +364,7 @@
             <div class="artifact-hint"><i class="fas fa-mouse-pointer"></i> 点击详情</div>
         </div>
 
-        <!-- 9. 生命树之心（作为圣器之一） -->
+        <!-- 9. 生命树之心 -->
         <div class="artifact-card" data-modal="modal-heart-seed">
             <div class="artifact-icon"><i class="fas fa-seedling"></i></div>
             <div class="artifact-name">生命树之心</div>
@@ -374,7 +374,8 @@
     </div>
 
     <!-- ========================================================= -->
-    <!-- 九个圣器弹窗（模态框）                                    -->
+    <!-- 九个圣器弹窗（模态框）- 全部统一为“圣狱冰灯”风格        -->
+    <!-- 每个弹窗均包含：标题+图标、描述、位置标签                 -->
     <!-- ========================================================= -->
 
     <!-- 圣狱冰灯 -->
@@ -395,7 +396,7 @@
     <div class="modal-overlay" id="modal-law-staff">
         <div class="modal-box">
             <div class="modal-header">
-                <h3><i class="fas fa-staff"></i> 天律法杖</h3>
+                <h3><i class="fas fa-wand-magic-sparkles"></i> 天律法杖</h3>
                 <button class="modal-close" data-close="modal-law-staff">&times;</button>
             </div>
             <div class="modal-body">
@@ -407,85 +408,99 @@
 
     <!-- 寂暗铃 -->
     <div class="modal-overlay" id="modal-dark-bell">
-        <div class="modal-header">
-            <h3><i class="fas fa-bell"></i> 寂暗铃</h3>
-            <button class="modal-close" data-close="modal-dark-bell">&times;</button>
-        </div>
-        <div class="modal-body">
-            <p>听到铃铛的人能够短暂压制住黑暗元素带来的情绪控制，但铃铛必须在一段时间内再次摇动，否则会再次被控制。目前被黑暗精灵夺走。</p>
-            <p><span class="prophecy-tag"><i class="fas fa-skull"></i> 东 · 光黯森林 · 黑暗精灵手中</span></p>
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fas fa-bell"></i> 寂暗铃</h3>
+                <button class="modal-close" data-close="modal-dark-bell">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>听到铃铛的人能够短暂压制住黑暗元素带来的情绪控制，但铃铛必须在一段时间内再次摇动，否则会再次被控制。目前被黑暗精灵夺走。</p>
+                <p><span class="prophecy-tag"><i class="fas fa-skull"></i> 东 · 光黯森林 · 黑暗精灵手中</span></p>
+            </div>
         </div>
     </div>
 
     <!-- 双面颂 -->
     <div class="modal-overlay" id="modal-double-drum">
-        <div class="modal-header">
-            <h3><i class="fas fa-drum"></i> 双面颂</h3>
-            <button class="modal-close" data-close="modal-double-drum">&times;</button>
-        </div>
-        <div class="modal-body">
-            <p>听到鼓声的兽人能够大幅增强战斗力，但常用可能导致情绪过激难以控制。目前常在兽族祭祀中被使用。</p>
-            <p><span class="prophecy-tag"><i class="fas fa-paw"></i> 东南 · 风息草原 · 兽族部落</span></p>
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fas fa-drum"></i> 双面颂</h3>
+                <button class="modal-close" data-close="modal-double-drum">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>听到鼓声的兽人能够大幅增强战斗力，但常用可能导致情绪过激难以控制。目前常在兽族祭祀中被使用。</p>
+                <p><span class="prophecy-tag"><i class="fas fa-paw"></i> 东南 · 风息草原 · 兽族部落</span></p>
+            </div>
         </div>
     </div>
 
     <!-- 无名之剑 -->
     <div class="modal-overlay" id="modal-nameless-sword">
-        <div class="modal-header">
-            <h3><i class="fas fa-sword"></i> 无名之剑</h3>
-            <button class="modal-close" data-close="modal-nameless-sword">&times;</button>
-        </div>
-        <div class="modal-body">
-            <p>唯一能够斩断元素魔法的宝剑，但只能被与魔法完全绝缘的人使用。目前无人知晓其下落，据说沉睡在某个失落的遗迹中。</p>
-            <p><span class="prophecy-tag"><i class="fas fa-question-circle"></i> 下落不明 · 可能埋藏于地下城深处</span></p>
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fas fa-khanda"></i> 无名之剑</h3>
+                <button class="modal-close" data-close="modal-nameless-sword">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>唯一能够斩断元素魔法的宝剑，但只能被与魔法完全绝缘的人使用。目前无人知晓其下落，据说沉睡在某个失落的遗迹中。</p>
+                <p><span class="prophecy-tag"><i class="fas fa-question-circle"></i> 下落不明 · 可能埋藏于地下城深处</span></p>
+            </div>
         </div>
     </div>
 
     <!-- 全晓之映 -->
     <div class="modal-overlay" id="modal-all-mirror">
-        <div class="modal-header">
-            <h3><i class="fas fa-compass"></i> 全晓之映</h3>
-            <button class="modal-close" data-close="modal-all-mirror">&times;</button>
-        </div>
-        <div class="modal-body">
-            <p>通过这面镜子可以知道目前自己最大的疑惑，但无法主动提问。有传言说有人在一个山洞里见过这面镜子。</p>
-            <p><span class="prophecy-tag"><i class="fas fa-mountain"></i> 传闻 · 某处隐秘山洞</span></p>
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fas fa-compass"></i> 全晓之映</h3>
+                <button class="modal-close" data-close="modal-all-mirror">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>通过这面镜子可以知道目前自己最大的疑惑，但无法主动提问。有传言说有人在一个山洞里见过这面镜子。</p>
+                <p><span class="prophecy-tag"><i class="fas fa-mountain"></i> 传闻 · 某处隐秘山洞</span></p>
+            </div>
         </div>
     </div>
 
     <!-- 鲛人泪 -->
     <div class="modal-overlay" id="modal-mermaid-tear">
-        <div class="modal-header">
-            <h3><i class="fas fa-droplet"></i> 鲛人泪</h3>
-            <button class="modal-close" data-close="modal-mermaid-tear">&times;</button>
-        </div>
-        <div class="modal-body">
-            <p>海洋继承人的眼泪，能够起死回生，复活生命树。鲛人族世代守护，献出眼泪会令灵魂衰弱。</p>
-            <p><span class="prophecy-tag"><i class="fas fa-water"></i> 西 · 环岸群岛 · 人鱼王庭</span></p>
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fas fa-droplet"></i> 鲛人泪</h3>
+                <button class="modal-close" data-close="modal-mermaid-tear">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>海洋继承人的眼泪，能够起死回生，复活生命树。鲛人族世代守护，献出眼泪会令灵魂衰弱。</p>
+                <p><span class="prophecy-tag"><i class="fas fa-water"></i> 西 · 环岸群岛 · 人鱼王庭</span></p>
+            </div>
         </div>
     </div>
 
     <!-- 勇者桂冠 -->
     <div class="modal-overlay" id="modal-hero-crown">
-        <div class="modal-header">
-            <h3><i class="fas fa-crown"></i> 勇者桂冠</h3>
-            <button class="modal-close" data-close="modal-hero-crown">&times;</button>
-        </div>
-        <div class="modal-body">
-            <p>桂冠保佑最强大的人，能为拥有者提供三次致命伤免伤，没有副作用。用尽后化为普通桂冠，不再属于圣器。目前作为冒险者公会最强者挑战的奖品。</p>
-            <p><span class="prophecy-tag"><i class="fas fa-trophy"></i> 西北 · 金穗之谷 · 冒险者公会</span></p>
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fas fa-crown"></i> 勇者桂冠</h3>
+                <button class="modal-close" data-close="modal-hero-crown">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>桂冠保佑最强大的人，能为拥有者提供三次致命伤免伤，没有副作用。用尽后化为普通桂冠，不再属于圣器。目前作为冒险者公会最强者挑战的奖品。</p>
+                <p><span class="prophecy-tag"><i class="fas fa-trophy"></i> 西北 · 金穗之谷 · 冒险者公会</span></p>
+            </div>
         </div>
     </div>
 
     <!-- 生命树之心 -->
     <div class="modal-overlay" id="modal-heart-seed">
-        <div class="modal-header">
-            <h3><i class="fas fa-seedling"></i> 生命树之心</h3>
-            <button class="modal-close" data-close="modal-heart-seed">&times;</button>
-        </div>
-        <div class="modal-body">
-            <p>生命树的种子，与一位人类勇者的心脏共生。种子在，勇者永生；种子离，勇者殁。它是封印法阵中最脆弱也最关键的节点。</p>
-            <p><span class="prophecy-tag"><i class="fas fa-heart"></i> 中央 · 中主城 · 生命树之下</span></p>
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fas fa-seedling"></i> 生命树之心</h3>
+                <button class="modal-close" data-close="modal-heart-seed">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>生命树的种子，与一位人类勇者的心脏共生。种子在，勇者永生；种子离，勇者殁。它是封印法阵中最脆弱也最关键的节点。</p>
+                <p><span class="prophecy-tag"><i class="fas fa-heart"></i> 中央 · 中主城 · 生命树之下</span></p>
+            </div>
         </div>
     </div>
 
