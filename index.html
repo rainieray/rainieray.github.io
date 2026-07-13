@@ -85,7 +85,7 @@
             background: #14181f;
             border-radius: 16px;
             padding: 1.2rem 1.8rem;
-            margin: 1.5rem 0 0rem;
+            margin: 1.5rem 0 1.5rem;
             border: 1px solid #2a2e38;
             display: flex;
             flex-wrap: wrap;
@@ -113,11 +113,179 @@
             color: #b8a788;
         }
 
-        /* 响应式 */
+        /* ===== 公告栏 ===== */
+        .notice-bar {
+            background: #14181f;
+            border-radius: 16px;
+            border: 1px solid #2a2e38;
+            padding: 0.8rem 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            position: relative;
+        }
+        .notice-bar:hover {
+            border-color: #b8a788;
+            background: #1a1e27;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .notice-bar .notice-icon {
+            color: #b8a788;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .notice-bar .notice-content {
+            flex: 1;
+            min-width: 0;
+        }
+        .notice-bar .notice-title {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #f2e9d0;
+        }
+        .notice-bar .notice-title i {
+            color: #b8a788;
+            margin-right: 0.4rem;
+        }
+        .notice-bar .notice-preview {
+            font-size: 0.85rem;
+            color: #a8a49a;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .notice-bar .notice-arrow {
+            color: #5d5d5d;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+            transition: 0.2s;
+        }
+        .notice-bar:hover .notice-arrow {
+            color: #b8a788;
+            transform: translateX(3px);
+        }
+
+        .notice-bar .notice-empty {
+            color: #7a7a7a;
+            font-size: 0.9rem;
+        }
+        .notice-bar .notice-empty i {
+            margin-right: 0.5rem;
+            color: #5d5d5d;
+        }
+
+        /* ===== 公告弹窗 ===== */
+        .notice-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(6px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+        }
+        .notice-modal-overlay.active {
+            display: flex;
+        }
+
+        .notice-modal-box {
+            background: #171b23;
+            border: 1px solid #b8a788;
+            border-radius: 28px;
+            max-width: 700px;
+            width: 100%;
+            max-height: 85vh;
+            padding: 2rem 2rem 1.8rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.9);
+            position: relative;
+            animation: fadeUp 0.25s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        @keyframes fadeUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .notice-modal-box .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #2a2e38;
+            padding-bottom: 0.8rem;
+            margin-bottom: 1rem;
+            flex-shrink: 0;
+        }
+        .notice-modal-box .modal-header h3 {
+            font-size: 1.3rem;
+            font-weight: 400;
+            color: #e6dcc8;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        .notice-modal-box .modal-header h3 i {
+            color: #b8a788;
+        }
+        .notice-modal-box .modal-close {
+            background: none;
+            border: none;
+            color: #8f8f8f;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: 0.2s;
+            padding: 0 0.4rem;
+        }
+        .notice-modal-box .modal-close:hover {
+            color: #e8e6e3;
+        }
+
+        .notice-modal-box .modal-body {
+            color: #cdc9c0;
+            font-size: 1rem;
+            line-height: 1.9;
+            overflow-y: auto;
+            padding-right: 0.3rem;
+            flex: 1;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .notice-modal-box .modal-body p {
+            margin-bottom: 0.8rem;
+        }
+        .notice-modal-box .modal-body .notice-full-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #f2e9d0;
+            border-bottom: 1px solid #2a2e38;
+            padding-bottom: 0.6rem;
+            margin-bottom: 1rem;
+        }
+
+        /* ===== 响应式 ===== */
         @media (max-width: 700px) {
             .hero h1 { font-size: 2.2rem; }
             .toc { gap: 0.5rem 1rem; }
             .toc a { font-size: 0.85rem; }
+            .notice-bar { padding: 0.6rem 1rem; flex-wrap: wrap; }
+            .notice-bar .notice-preview { white-space: normal; }
+            .notice-modal-box { padding: 1.2rem; }
         }
     </style>
 </head>
@@ -143,7 +311,7 @@
     </div>
 
     <!-- ========================================================= -->
-    <!-- 目录导航（点击跳转到对应板块） -->
+    <!-- 目录导航 -->
     <!-- ========================================================= -->
     <div class="toc">
         <a href="overview.html"><i class="fas fa-globe"></i> 世界观概述</a>
@@ -154,6 +322,170 @@
         <a href="story.html"><i class="fas fa-book-open"></i> 正文</a>
     </div>
 
+    <!-- ========================================================= -->
+    <!-- 公告栏 -->
+    <!-- ========================================================= -->
+    <div class="notice-bar" id="noticeBar" onclick="openNoticeModal()">
+        <div class="notice-icon"><i class="fas fa-bullhorn"></i></div>
+        <div class="notice-content" id="noticeContent">
+            <div class="notice-empty">
+                <i class="fas fa-spinner fa-pulse"></i> 加载公告中...
+            </div>
+        </div>
+        <div class="notice-arrow"><i class="fas fa-chevron-right"></i></div>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- 公告弹窗 -->
+    <!-- ========================================================= -->
+    <div class="notice-modal-overlay" id="noticeModal">
+        <div class="notice-modal-box">
+            <div class="modal-header">
+                <h3><i class="fas fa-bullhorn"></i> <span id="modalNoticeTitle">公告</span></h3>
+                <button class="modal-close" onclick="closeNoticeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalNoticeBody">
+                加载中...
+            </div>
+        </div>
+    </div>
+
 </div>
+
+<script>
+    // ============================================================
+    //  公告栏逻辑：
+    //  读取 notice.txt，第一行以 # 开头作为标题，第二行作为摘要
+    //  点击弹出完整内容（忽略 # 标记）
+    // ============================================================
+
+    let fullNoticeText = '';
+
+    // ===== 加载公告 =====
+    function loadNotice() {
+        const contentEl = document.getElementById('noticeContent');
+
+        fetch('notice.txt')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('notice.txt 文件未找到');
+                }
+                return response.text();
+            })
+            .then(text => {
+                fullNoticeText = text;
+                const lines = text.split('\n');
+                let title = '公告';
+                let preview = '暂无公告内容';
+                let bodyLines = [];
+
+                // 解析第一行（标题）：以 # 开头
+                let firstLine = lines.length > 0 ? lines[0].trim() : '';
+                if (firstLine.startsWith('#')) {
+                    title = firstLine.substring(1).trim();
+                } else {
+                    title = '公告';
+                }
+
+                // 第二行作为摘要
+                let secondLine = lines.length > 1 ? lines[1].trim() : '';
+                if (secondLine) {
+                    preview = secondLine;
+                } else {
+                    preview = '点击查看完整公告';
+                }
+
+                // 构建弹窗内容（忽略 # 标记，保留所有内容）
+                let bodyHtml = `<div class="notice-full-title">${title}</div>`;
+                // 跳过第一行（标题行）
+                for (let i = 1; i < lines.length; i++) {
+                    let line = lines[i];
+                    // 忽略 # 标记（但保留内容，移除 # 前缀）
+                    if (line.trim().startsWith('#')) {
+                        line = line.trim().substring(1).trim();
+                    }
+                    if (line.trim() === '') {
+                        bodyHtml += '<br>';
+                    } else {
+                        bodyHtml += `<p>${line}</p>`;
+                    }
+                }
+                // 如果只有标题没有正文
+                if (lines.length <= 1) {
+                    bodyHtml += '<p style="color:#7a7a7a;">（暂无公告内容）</p>';
+                }
+
+                // 保存完整弹窗内容
+                window.noticeBodyHtml = bodyHtml;
+
+                // 渲染公告栏
+                contentEl.innerHTML = `
+                    <div class="notice-title"><i class="fas fa-star"></i> ${title}</div>
+                    <div class="notice-preview">${preview}</div>
+                `;
+            })
+            .catch(error => {
+                contentEl.innerHTML = `
+                    <div class="notice-empty">
+                        <i class="fas fa-exclamation-triangle"></i> 暂无公告
+                        <span style="font-size:0.75rem;color:#5d5d5d;margin-left:0.5rem;">
+                            （请创建 notice.txt）
+                        </span>
+                    </div>
+                `;
+                console.error('加载公告失败:', error);
+            });
+    }
+
+    // ===== 打开公告弹窗 =====
+    function openNoticeModal() {
+        const modal = document.getElementById('noticeModal');
+        const titleEl = document.getElementById('modalNoticeTitle');
+        const bodyEl = document.getElementById('modalNoticeBody');
+
+        if (!fullNoticeText || fullNoticeText.trim() === '') {
+            titleEl.textContent = '公告';
+            bodyEl.innerHTML = '<p style="color:#7a7a7a;">暂无公告内容</p>';
+            modal.classList.add('active');
+            return;
+        }
+
+        // 使用已解析的标题
+        const firstLine = fullNoticeText.split('\n')[0]?.trim() || '';
+        const title = firstLine.startsWith('#') ? firstLine.substring(1).trim() : '公告';
+        titleEl.textContent = title;
+
+        // 使用已生成的HTML
+        bodyEl.innerHTML = window.noticeBodyHtml || '<p>加载中...</p>';
+
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    // ===== 关闭公告弹窗 =====
+    function closeNoticeModal() {
+        const modal = document.getElementById('noticeModal');
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    // ===== 点击背景关闭弹窗 =====
+    document.getElementById('noticeModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeNoticeModal();
+        }
+    });
+
+    // ===== ESC 关闭弹窗 =====
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeNoticeModal();
+        }
+    });
+
+    // ===== 启动 =====
+    loadNotice();
+</script>
+
 </body>
 </html>
