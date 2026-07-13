@@ -56,7 +56,86 @@
             margin-top: 0.3rem;
         }
 
-        /* ===== 目录区域 ===== */
+        /* ===== 正文阅读区域（放在上方） ===== */
+        .reading-area {
+            background: #14181f;
+            border-radius: 18px;
+            border: 1px solid #282d36;
+            padding: 2rem 2.5rem;
+            min-height: 200px;
+            margin-bottom: 2rem;
+            display: none;
+        }
+        .reading-area.active { display: block; }
+
+        .reading-area .reading-title {
+            font-size: 1.6rem;
+            font-weight: 400;
+            color: #e6dcc8;
+            text-align: center;
+            border-bottom: 1px solid #2a2e38;
+            padding-bottom: 0.8rem;
+            margin-bottom: 1.2rem;
+        }
+        .reading-area .reading-body {
+            color: #d0cbc0;
+            font-size: 1.05rem;
+            line-height: 2;
+            min-height: 150px;
+        }
+        .reading-area .reading-body p { margin-bottom: 1rem; }
+        .reading-area .reading-body .empty-hint {
+            text-align: center;
+            color: #7a7a7a;
+            padding: 2rem;
+        }
+
+        /* ===== 上下章导航按钮 ===== */
+        .reading-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1.2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #2a2e38;
+            gap: 1rem;
+        }
+        .reading-nav .nav-btn {
+            background: #0d1117;
+            border: 1px solid #2a2e38;
+            border-radius: 10px;
+            padding: 0.5rem 1.2rem;
+            color: #d0cbc0;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .reading-nav .nav-btn:hover {
+            border-color: #b8a788;
+            color: #f2e9d0;
+            background: #1a1e27;
+        }
+        .reading-nav .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        .reading-nav .nav-btn:disabled:hover {
+            border-color: #2a2e38;
+            color: #d0cbc0;
+            background: #0d1117;
+        }
+        .reading-nav .nav-close {
+            color: #7a7a7a;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: 0.2s;
+        }
+        .reading-nav .nav-close:hover { color: #e8e6e3; }
+
+        /* ===== 目录区域（放在下方） ===== */
         .toc-container {
             display: flex;
             flex-direction: column;
@@ -146,53 +225,11 @@
         }
         .chapter-item .ch-status.has-content { color: #6a8a6a; }
         .chapter-item .ch-status.empty { color: #5d5d5d; }
-
-        /* ===== 正文阅读区域 ===== */
-        .reading-area {
-            margin-top: 2rem;
-            background: #14181f;
-            border-radius: 18px;
-            border: 1px solid #282d36;
-            padding: 2rem 2.5rem;
-            min-height: 200px;
-            display: none;
+        .chapter-item.active-chapter {
+            background: #1a1e27;
+            color: #f2e9d0;
+            border-left: 3px solid #b8a788;
         }
-        .reading-area.active { display: block; }
-
-        .reading-area .reading-title {
-            font-size: 1.6rem;
-            font-weight: 400;
-            color: #e6dcc8;
-            text-align: center;
-            border-bottom: 1px solid #2a2e38;
-            padding-bottom: 0.8rem;
-            margin-bottom: 1.2rem;
-        }
-        .reading-area .reading-body {
-            color: #d0cbc0;
-            font-size: 1.05rem;
-            line-height: 2;
-        }
-        .reading-area .reading-body p { margin-bottom: 1rem; }
-        .reading-area .reading-body .empty-hint {
-            text-align: center;
-            color: #7a7a7a;
-            padding: 2rem;
-        }
-
-        .reading-area .reading-close {
-            display: inline-block;
-            margin-top: 1.2rem;
-            color: #7a7a7a;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: 0.2s;
-            border-top: 1px solid #2a2e38;
-            padding-top: 1rem;
-            width: 100%;
-            text-align: center;
-        }
-        .reading-area .reading-close:hover { color: #e8e6e3; }
 
         /* ===== 加载状态 ===== */
         .loading-state {
@@ -209,6 +246,8 @@
             .chapter-item { padding: 0.5rem 1rem 0.5rem 1.5rem; }
             .reading-area { padding: 1.2rem; }
             .page-header h1 { font-size: 1.8rem; }
+            .reading-nav { flex-wrap: wrap; justify-content: center; }
+            .reading-nav .nav-btn { font-size: 0.8rem; padding: 0.4rem 0.8rem; }
         }
     </style>
 </head>
@@ -226,20 +265,28 @@
         <div class="sub" id="statusInfo">正在加载目录...</div>
     </div>
 
-    <!-- ===== 目录 ===== -->
+    <!-- ===== 正文阅读区域（上方） ===== -->
+    <div class="reading-area" id="readingArea">
+        <div class="reading-title" id="readingTitle">章节标题</div>
+        <div class="reading-body" id="readingBody"></div>
+        <div class="reading-nav">
+            <button class="nav-btn" id="prevChapter" onclick="navigateChapter(-1)">
+                <i class="fas fa-chevron-left"></i> 上一章
+            </button>
+            <span class="nav-close" onclick="closeReading()">
+                <i class="fas fa-times"></i> 关闭
+            </span>
+            <button class="nav-btn" id="nextChapter" onclick="navigateChapter(1)">
+                下一章 <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- ===== 目录区域（下方） ===== -->
     <div class="toc-container" id="tocContainer">
         <div class="loading-state">
             <i class="fas fa-spinner fa-pulse"></i>
             正在解析正文...
-        </div>
-    </div>
-
-    <!-- ===== 正文阅读区 ===== -->
-    <div class="reading-area" id="readingArea">
-        <div class="reading-title" id="readingTitle">章节标题</div>
-        <div class="reading-body" id="readingBody"></div>
-        <div class="reading-close" onclick="closeReading()">
-            <i class="fas fa-times"></i> 关闭阅读
         </div>
     </div>
 
@@ -260,10 +307,13 @@
     const TITLE = document.getElementById('readingTitle');
     const BODY = document.getElementById('readingBody');
     const STATUS = document.getElementById('statusInfo');
+    const PREV_BTN = document.getElementById('prevChapter');
+    const NEXT_BTN = document.getElementById('nextChapter');
 
     // 存储解析后的数据
     let volumes = [];
-    let allChapters = [];
+    let flatChapters = [];      // 扁平化所有章节，用于上下章导航
+    let currentChapterIndex = -1;
 
     // ===== 解析 TXT =====
     function parseStory(text) {
@@ -277,28 +327,22 @@
             const line = lines[i];
             const trimmed = line.trim();
 
-            // 跳过空行（但保留用于段落分隔）
             if (trimmed === '') {
                 if (currentChap) {
-                    currentContent.push(''); // 空行作为段落分隔标记
+                    currentContent.push('');
                 }
                 continue;
             }
 
             // 检测卷标题：# 开头
             if (trimmed.startsWith('# ') && !trimmed.startsWith('## ')) {
-                // 保存当前章
                 if (currentChap) {
                     currentChap.content = currentContent.join('\n').trim();
                     currentVol.chapters.push(currentChap);
                     currentContent = [];
                 }
-                // 创建新卷
                 const volName = trimmed.substring(2).trim();
-                currentVol = {
-                    name: volName,
-                    chapters: []
-                };
+                currentVol = { name: volName, chapters: [] };
                 result.push(currentVol);
                 currentChap = null;
                 continue;
@@ -306,7 +350,6 @@
 
             // 检测章标题：## 开头
             if (trimmed.startsWith('## ')) {
-                // 保存当前章
                 if (currentChap) {
                     currentChap.content = currentContent.join('\n').trim();
                     if (currentVol) {
@@ -314,7 +357,6 @@
                     }
                     currentContent = [];
                 }
-                // 创建新章
                 const chapName = trimmed.substring(3).trim();
                 currentChap = {
                     name: chapName,
@@ -324,11 +366,10 @@
                 continue;
             }
 
-            // 普通文本行 → 加入当前章内容
+            // 普通文本行
             if (currentChap) {
                 currentContent.push(trimmed);
             } else {
-                // 如果还没有章，但又有文本（格式错误），创建默认章
                 if (!currentVol) {
                     currentVol = { name: '未分类', chapters: [] };
                     result.push(currentVol);
@@ -342,7 +383,6 @@
             }
         }
 
-        // 保存最后一个章
         if (currentChap) {
             currentChap.content = currentContent.join('\n').trim();
             if (currentVol) {
@@ -351,6 +391,20 @@
         }
 
         return result;
+    }
+
+    // ===== 扁平化所有章节 =====
+    function flattenChapters(volumes) {
+        const flat = [];
+        volumes.forEach(vol => {
+            vol.chapters.forEach(chap => {
+                flat.push({
+                    ...chap,
+                    volumeName: vol.name
+                });
+            });
+        });
+        return flat;
     }
 
     // ===== 渲染目录 =====
@@ -391,12 +445,10 @@
                 const statusClass = hasContent ? 'has-content' : 'empty';
                 const statusIcon = hasContent ? 'fa-check-circle' : 'fa-minus-circle';
                 const statusText = hasContent ? '可读' : '空章';
-
-                // 生成唯一ID用于定位
-                const chapId = `chap-${volIndex}-${chapIndex}`;
+                const globalIndex = flatChapters.findIndex(fc => fc.name === chap.name && fc.volume === vol.name);
 
                 html += `
-                    <div class="chapter-item" onclick="loadChapter('${chapId}')" id="${chapId}">
+                    <div class="chapter-item" onclick="loadChapter(${globalIndex})" data-index="${globalIndex}">
                         <span class="ch-name"><i class="fas fa-caret-right"></i> ${chap.name}</span>
                         <span class="ch-status ${statusClass}">
                             <i class="fas ${statusIcon}"></i> ${statusText}
@@ -436,38 +488,15 @@
     }
 
     // ===== 加载章节内容 =====
-    function loadChapter(chapId) {
-        const el = document.getElementById(chapId);
-        if (!el) return;
+    function loadChapter(index) {
+        if (index < 0 || index >= flatChapters.length) return;
 
-        // 获取章名
-        const nameEl = el.querySelector('.ch-name');
-        const chapName = nameEl ? nameEl.textContent.trim() : '未知章节';
+        currentChapterIndex = index;
+        const chap = flatChapters[index];
 
-        // 查找对应章节数据
-        let foundChap = null;
-        for (const vol of volumes) {
-            for (const chap of vol.chapters) {
-                if (chap.name === chapName) {
-                    foundChap = chap;
-                    break;
-                }
-            }
-            if (foundChap) break;
-        }
+        TITLE.textContent = `${chap.volume} · ${chap.name}`;
 
-        if (!foundChap) {
-            BODY.innerHTML = '<div class="empty-hint">未找到章节内容</div>';
-            TITLE.textContent = chapName;
-            READING.classList.add('active');
-            READING.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            return;
-        }
-
-        // 渲染正文
-        TITLE.textContent = `${foundChap.volume} · ${foundChap.name}`;
-
-        if (!foundChap.content || foundChap.content.trim() === '') {
+        if (!chap.content || chap.content.trim() === '') {
             BODY.innerHTML = `
                 <div class="empty-hint">
                     <i class="fas fa-pen" style="display:block;font-size:1.5rem;margin-bottom:0.5rem;"></i>
@@ -475,13 +504,11 @@
                 </div>
             `;
         } else {
-            // 将文本转换为段落
-            const paragraphs = foundChap.content.split(/\n\s*\n/);
+            const paragraphs = chap.content.split(/\n\s*\n/);
             let html = '';
             paragraphs.forEach(p => {
                 const trimmed = p.trim();
                 if (trimmed) {
-                    // 保留段落内的换行
                     const lines = trimmed.split('\n');
                     if (lines.length === 1) {
                         html += `<p>${lines[0]}</p>`;
@@ -496,24 +523,64 @@
         READING.classList.add('active');
         READING.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
+        // 更新导航按钮状态
+        updateNavButtons();
+
         // 高亮当前章节
         document.querySelectorAll('.chapter-item').forEach(item => {
-            item.style.background = '';
-            item.style.color = '';
+            item.classList.remove('active-chapter');
         });
-        el.style.background = '#1a1e27';
-        el.style.color = '#f2e9d0';
+        const activeItem = document.querySelector(`.chapter-item[data-index="${index}"]`);
+        if (activeItem) {
+            activeItem.classList.add('active-chapter');
+            // 确保父卷展开
+            const parentList = activeItem.closest('.chapter-list');
+            if (parentList && !parentList.classList.contains('open')) {
+                const parentVol = parentList.closest('.volume-item');
+                if (parentVol) {
+                    const header = parentVol.querySelector('.volume-header');
+                    if (header) toggleVolume(header);
+                }
+            }
+        }
+    }
+
+    // ===== 上下章导航 =====
+    function navigateChapter(direction) {
+        const newIndex = currentChapterIndex + direction;
+        if (newIndex >= 0 && newIndex < flatChapters.length) {
+            loadChapter(newIndex);
+        }
+    }
+
+    function updateNavButtons() {
+        PREV_BTN.disabled = (currentChapterIndex <= 0);
+        NEXT_BTN.disabled = (currentChapterIndex >= flatChapters.length - 1);
     }
 
     // ===== 关闭阅读 =====
     function closeReading() {
         READING.classList.remove('active');
         document.querySelectorAll('.chapter-item').forEach(item => {
-            item.style.background = '';
-            item.style.color = '';
+            item.classList.remove('active-chapter');
         });
+        currentChapterIndex = -1;
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
+
+    // ===== 键盘快捷键 =====
+    document.addEventListener('keydown', function(e) {
+        if (!READING.classList.contains('active')) return;
+        if (e.key === 'ArrowLeft') {
+            e.preventDefault();
+            navigateChapter(-1);
+        } else if (e.key === 'ArrowRight') {
+            e.preventDefault();
+            navigateChapter(1);
+        } else if (e.key === 'Escape') {
+            closeReading();
+        }
+    });
 
     // ===== 加载 story.txt =====
     function loadStory() {
@@ -538,12 +605,7 @@
                 }
 
                 volumes = parseStory(text);
-                allChapters = [];
-                volumes.forEach(vol => {
-                    vol.chapters.forEach(chap => {
-                        allChapters.push(chap);
-                    });
-                });
+                flatChapters = flattenChapters(volumes);
                 renderTOC(volumes);
             })
             .catch(error => {
