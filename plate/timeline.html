@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>时间线 · 九谕传说</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0d0e12;
+            color: #e8e6e3;
+            font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            padding: 2rem 1.5rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .back-nav {
+            margin-bottom: 2rem;
+        }
+        .back-nav a {
+            color: #b8a788;
+            text-decoration: none;
+            font-size: 0.95rem;
+            border: 1px solid #2a2e38;
+            padding: 0.4rem 1.2rem;
+            border-radius: 30px;
+            transition: 0.2s;
+            display: inline-block;
+        }
+        .back-nav a:hover {
+            background: #1e222b;
+            border-color: #b8a788;
+        }
+        .back-nav a i {
+            margin-right: 0.5rem;
+        }
+
+        .page-header {
+            border-bottom: 1px solid #2a2c33;
+            padding-bottom: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        .page-header h1 {
+            font-size: 2.4rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            color: #f2e9d0;
+        }
+        .page-header h1 i {
+            color: #b8a788;
+            margin-right: 0.8rem;
+        }
+        .page-header .sub {
+            color: #9a9a9a;
+            font-size: 1rem;
+            margin-top: 0.3rem;
+        }
+
+        /* ===== 时间线容器 ===== */
+        .timeline {
+            position: relative;
+            padding: 0.5rem 0 1.5rem 0;
+            padding-left: 2.5rem;
+        }
+
+        /* ===== 世纪分段 ===== */
+        .era-section {
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .era-label {
+            position: relative;
+            display: inline-block;
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: #f2e9d0;
+            letter-spacing: 2px;
+            background: #0d0e12;
+            padding-right: 1.2rem;
+            padding-bottom: 0.3rem;
+            padding-left: 0.5rem;
+            z-index: 2;
+        }
+        .era-label i {
+            color: #b8a788;
+            margin-right: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .era-section .era-line {
+            position: absolute;
+            left: -1.8rem;
+            top: 2.4rem;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, #b8a788, #5d5d5d);
+            border-radius: 4px;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 1.2rem;
+            padding-top: 0.4rem;
+            padding-bottom: 1.8rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -1.8rem;
+            top: 0.8rem;
+            width: 14px;
+            height: 14px;
+            background: #b8a788;
+            border-radius: 50%;
+            border: 2px solid #0d0e12;
+            box-shadow: 0 0 0 3px #2a2e38, 0 0 0 5px #0d0e12;
+            z-index: 1;
+            transform: translateX(-50%);
+        }
+
+        .timeline-item .event-title {
+            font-size: 1.3rem;
+            font-weight: 400;
+            color: #f2e9d0;
+            letter-spacing: 0.5px;
+            line-height: 1.3;
+        }
+
+        .timeline-item .event-time {
+            font-size: 0.85rem;
+            color: #9a8a7a;
+            margin-top: 0.05rem;
+            margin-bottom: 0.2rem;
+        }
+        .timeline-item .event-time i {
+            margin-right: 0.3rem;
+            font-size: 0.7rem;
+            color: #6a5a4a;
+        }
+
+        .timeline-item .event-desc {
+            font-size: 1rem;
+            color: #d0cbc0;
+            line-height: 1.7;
+            max-width: 800px;
+        }
+        .timeline-item .event-desc p {
+            margin-bottom: 0.6rem;
+        }
+        .timeline-item .event-desc p:last-child {
+            margin-bottom: 0;
+        }
+
+        @media (max-width: 700px) {
+            .timeline {
+                padding-left: 1.8rem;
+            }
+            .era-section .era-line {
+                left: -1.2rem;
+            }
+            .timeline-item {
+                padding-left: 0.8rem;
+            }
+            .timeline-item::before {
+                left: -1.2rem;
+                width: 12px;
+                height: 12px;
+            }
+            .era-label {
+                font-size: 1.1rem;
+                padding-right: 0.8rem;
+            }
+            .timeline-item .event-title {
+                font-size: 1.1rem;
+            }
+            .timeline-item .event-desc {
+                font-size: 0.92rem;
+            }
+        }
+
+        @media (max-width: 450px) {
+            .timeline {
+                padding-left: 1.2rem;
+            }
+            .era-section .era-line {
+                left: -0.8rem;
+            }
+            .timeline-item {
+                padding-left: 0.5rem;
+            }
+            .timeline-item::before {
+                left: -0.8rem;
+                width: 10px;
+                height: 10px;
+            }
+            .era-label {
+                font-size: 1rem;
+                padding-left: 0;
+            }
+            .timeline-item .event-title {
+                font-size: 1rem;
+            }
+            .timeline-item .event-time {
+                font-size: 0.75rem;
+            }
+        }
+
+        .empty-timeline {
+            color: #7a7a7a;
+            font-style: italic;
+            text-align: center;
+            padding: 3rem 0;
+            border: 1px dashed #2a2e38;
+            border-radius: 20px;
+            margin-top: 1rem;
+        }
+        .empty-timeline i {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #5d5d5d;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <div class="back-nav">
+        <a href="index.html"><i class="fas fa-arrow-left"></i> 返回主页</a>
+    </div>
+
+    <div class="page-header">
+        <h1><i class="fas fa-clock"></i> 时间线</h1>
+        <div class="sub">九域大陆的编年史 · 自创世之初</div>
+    </div>
+
+    <div class="timeline" id="timelineContainer">
+        <div class="empty-timeline">
+            <i class="fas fa-hourglass-start"></i>
+            加载时间线中...
+        </div>
+    </div>
+
+</div>
+
+<script>
+    (function() {
+        // ============================================================
+        //  时间线数据 —— 使用反引号模板字符串，中文引号不会导致语法错误
+        // ============================================================
+
+        const timelineData = [
+            {
+                era: "神话纪元",
+                events: [
+                    { 
+                        title: "神创三族", 
+                        time: "-5000年", 
+                        desc: `创世神从虚空中苏醒，用自己的力量创造了第一个意识种族——精灵。
+精灵身为第一个种族，继承了创世神的光明元素，能够使用光明魔法。精灵以此为傲，种族内以魔法的高强和纯正划分，其中能够使用最纯正的光明元素魔法的精灵更是被奉为贵族。
+
+创世神创造了第二个种族——兽人，兽人与精灵不同，无法使用魔法，但是强健的体格让他们的生产力远远大于精灵。
+精灵和兽人领地相近，经常发生摩擦，精灵认为兽人作为「第二种族」，应属于自己的附属种族，但是兽人并不信仰精灵而是创世神。
+
+创世神创造了第三个种族——巨人，他希望性格平和的巨人能够安抚——或是架起一座城墙，隔断精灵和兽人的战争。` 
+                    },
+                    { 
+                        title: "伪神之战", 
+                        time: "-4000～-3501年", 
+                        desc: `创世神因为精灵和兽人的纷争开始力不从心，祂的魔力也开始变异，生出了一种新的元素，黑暗元素。
+这种元素最先影响的是与创世神关联没有那么强的巨人，再加上长期精灵的傲慢、兽人的愤怒，原本性格平和的巨人开始变得好战，他们认为：
+
+『蝼蚁一般的种族因何而存在？不过是为我们铺路罢了。
+跪伏，或湮灭——大地只铭记我们的脚步。』
+
+巨人向精灵和兽人开战，可它们无法战胜拥有强大魔力的精灵和敏捷好战的兽人联盟，于是巨人族在这场战争后彻底灭亡了。` 
+                    },
+                    { 
+                        title: "种族迁移", 
+                        time: "-3501年", 
+                        desc: `创世神发现自己的负面情绪产生了新的力量，意识到自己的存在本身会加速世界腐化。
+宫殿周围的地域逐渐被黑暗吞噬，祂不敢继续影响种族的发展，且因为亲眼目睹了巨人族的毁灭，创世神将自己封印在了世界中心的宫殿里，并给予精灵寂暗铃，给予兽人双面颂。
+
+兽人和精灵用魔法将巨人的遗迹封存起来，兽人继承巨人的锻造技术，精灵则通过巨人研究残存的黑暗魔法知识，少部分的精灵和兽人仍然居住在这里，大部分的人都向着东方前进。` 
+                    }
+                ]
+            },
+            {
+                era: "发展纪元",
+                events: [
+                    { title: "种族发展", time: "-3500～-2750年", desc: `精灵和兽人联盟成立。
+一部分的精灵受到了黑暗因素的影响，品质高洁的精灵开始变得堕落，私底下建造了一条买卖精灵的产业链，还有一部分是被光明精灵贵族压迫的低阶精灵，黑暗元素放大了他们的怨恨。
+在产业链日益发达的途中，黑暗神吸收了越来越多的负面情绪，祂诱惑激进的黑暗精灵，企图通过精灵来将自己实体化。
+
+有一部分的兽人来到中原，逐渐变成了人类，失去图腾信仰，转而发展农耕与城邦，体型退化但智力上升；
+而另一部分来到森林洞穴，逐渐变成了矮人，躯体被矿物侵蚀，但仍保留兽人的蛮力；
+而留在草原的兽人仍保留兽型人的外貌。
+
+长时间的洞穴生活消耗了矮人的食物储备，饥饿的矮人族群在寻找食物的过程中意外被黑暗精灵抓住，用特殊的黑魔法签订了奴隶契约，为黑暗精灵采矿石。
+而那些不擅长体力活动的精灵则是被指使用矿石制造新的魔法武器，漫长的洞穴生活让这些精灵因黑暗魔法肉体萎缩，但精神力暴涨，擅长控制自己的双手，变成了侏儒。` },
+                    { title: "光裔的审判", time: "-2750年", desc: `黑暗精灵便挑起了战争。黑暗精灵这样说到：
+
+『暗幕降临，虚伪者的王庭将倾，愚勇者的战鼓永寂。
+矮人与侏儒？它们生来便是跪着的命。』
+
+精灵和兽人再次结成联盟，但是这回由于兽人基数过大，联盟屡战屡败。在黑暗精灵即将统治大陆之时，兽人偶然发现双面颂能够使兽人战斗力大增，但是听久了会让其狂暴，精灵的铃铛可以镇压黑暗元素，但精灵并不想使用创世神的信物，因为他们能够对抗黑暗魔法，但兽人不会魔法，除非近身否则无法攻击黑暗精灵。
+无奈之下，兽人举行了第一场祭祀，向创世神借用力量，创世神的力量将原本只有一小面的双面颂变成了足以震响整个草原的大鼓。他们说：
+
+『血肉为甲，怒火为刃——
+神赐吾族咆哮撕裂苍穹！怯懦者就好好躲在身后，背叛者的头颅就由我来收下。』
+
+在兽人的镇压下，黑暗神为了保存实力选择按兵不动，黑暗精灵回退到了森林。` },
+                    { title: "分裂战争", time: "-2500年", desc: `黑暗精灵回到森林后分裂成了两派，一方后悔当初听从黑暗神的召唤，是黑暗精灵保守派，他们本是被压迫的精灵，只想有一个地方能生存；
+另一方仍旧追随黑暗神，是黑暗精灵激进派，欲壑难填让他们无法再回到过去。在黑暗精灵局势动荡的时候，被奴役已久的侏儒和矮人联合光明精灵对黑暗精灵发动战争。
+
+侏儒独立宣言：
+『不再为奴！不再低头！侏儒以千年的智慧起誓——
+侏儒的齿轮，只铸造自己的王冠！』
+
+矮人独立宣言：
+『锤与镐的时代不曾终结，枷锁的使命不再——
+矮人的国度，只向自由低头！』
+
+黑暗精灵自诩血脉纯正，依赖魔法，而矮人和侏儒铸造起的机甲却不是魔法能轻松击败，再加上光明精灵的帮助，很快便赢得了战斗。
+激进派的黑暗精灵发现了禁忌法阵，逃往大陆的反面；保守派的间谍趁着激进派和对方战斗，偷走了女神赐予的铃铛，并用黑魔法将森林划为两半，一边日光充沛，另一边永夜无光，光明精灵的夜视能力也逐渐退化，光明精灵至此与黑暗精灵结下世仇。
+
+『邪恶的背叛者、无耻的盗窃者！你们将永远流浪于深渊，连影子都会背叛你们的名！
+——哪怕偷藏神的信物，你们也永远不会再被神垂怜！』` }
+                ]
+            },
+            {
+                era: "灾变纪元",
+                events: [
+                    { title: "大陆灾变", time: "-2000～-1000年", desc: `黑暗神的力量日益强大，创世神自身的能力也受到了波及，大陆开始发生异变。
+越来越多的居民变成了亡灵。
+
+亡灵不受到黑暗元素的影响，但是会因为诅咒有不同的并发症，一部分的亡灵主动与黑暗神交易，换取力量，自愿被诅咒折磨以求永生；一部分的亡灵灵魂被魔法烙印，痛苦永生，苦苦寻求死亡以脱离苦海，他们说：
+
+『我们在痛苦中清醒，在永恒中崩溃。 
+——生者渴求永恒，永恒者渴求安息，这世界本就是一场颠倒的噩梦』
+
+亡灵的增多让黑暗神的力量愈发强大，创世神隐隐有些压制不住黑暗神，黑暗神的力量开始额能够影响大陆整体。
+最开始只是一个小裂谷，后来裂谷越来越大，最后大陆已经有四分五裂的趋势，位于北方的火山也隐隐有爆发的倾向。
+创世神尝试组织火山的爆发，黑暗神趁虚而入，降下了陨石，至此大陆彻底裂成了九块，变成了现在的【九域】。` }
+                ]
+            },
+            {
+                era: "混乱纪元",
+                events: [
+                    { title: "混乱开始", time: "-1000年", desc: `人类开始大规模地发展贸易，九域分裂后凭借这人数繁多成为了九域发展最快的种族，到了混乱中期已经有了很完整的体系，与各个种族签订协议，相互往来；
+精灵自身的高傲阻碍了自己的发展，但本身的不足迫使他们与人类交好；
+兽人与人类同根同源，形成了与友好的供应与贸易联盟；亡灵开创出属于自己的战斗体系，与人类签订协议，人类提供为亡灵治疗的方法，亡灵成为人类的雇佣兵；
+黑暗精灵不与其他种族交流，多数是通过雇佣兵来获得物资，用只生长在月光森林的特殊药草作为交换；
+侏儒和矮人联合推行了工业方面的器械，目前的科技水平已是成熟的蒸汽朋克时代。` },
+                    { title: "种族战争", time: "-1000～-500年", desc: `光明精灵和黑暗精灵持续不断地爆发战争试图争夺领地，可因为无法在对方的领地停留太久，只能通过蚕食的方式一点点攻占，最终以签订协议告终，黑暗精灵隐居于黑暗森林。
+
+侏儒一族宣称看见了「神谕」，声称以后不会再信仰创世神，导致侏儒矮人联盟和兽人精灵联盟爆发战役。
+
+人类学者和人类魔法师之间的阶级矛盾愈演愈烈，两派争执不下，背地里小动作不断。
+
+人类对海洋生物过度捕捉让海洋兽人种族对沿海贸易的人类有一定的敌意。
+
+精灵认为人类垄断了学识，而人类认为精灵独占了魔法。
+
+以上为混乱纪元较大的矛盾和变化，编年史统称为种族战争。` },
+                    { title: "黑暗入侵", time: "-500~-1年", desc: `黑暗神在种族战争中吸收了足够的负面能量，开启了混乱纪元的下半篇章。黑暗神开始进攻九域企图占领整个大陆，在创世神的辅助下，种族之间相互妥协退让，最后空前一致的团结。` },
+                    { title: "终神之战", time: "-1年", desc: `创世神知道自己无法杀死黑暗神，只能一直压制，祂的心脏能化为了一棵能够保护九域大陆的生命树，作为封印魔法阵的支柱，而将自己的能力注入到圣器中，不仅能镇压黑暗元素，关键时候还能再次启动法阵。` }
+                ]
+            },
+            {
+                era: "新纪元",
+                events: [
+                    { title: "联盟成立", time: "0年", desc: `九域联盟成立，签订种族友好协议，人类主导，光暗精灵、矮人、兽人、侏儒加入，约定共享资源，进行贸易，共同发展。` }
+                ]
+            }
+        ];
+
+        // ============================================================
+        //  渲染时间线
+        // ============================================================
+        const container = document.getElementById('timelineContainer');
+
+        function formatDesc(str) {
+            if (!str) return '';
+            let escaped = str.replace(/&/g, '&amp;')
+                             .replace(/</g, '&lt;')
+                             .replace(/>/g, '&gt;')
+                             .replace(/"/g, '&quot;')
+                             .replace(/'/g, '&#039;');
+            
+            const paragraphs = escaped.split(/\n\s*\n/);
+            if (paragraphs.length > 1) {
+                return paragraphs.map(p => {
+                    const lines = p.split('\n').filter(line => line.trim() !== '');
+                    return `<p>${lines.join('<br>')}</p>`;
+                }).join('');
+            } else {
+                const lines = escaped.split('\n').filter(line => line.trim() !== '');
+                return lines.join('<br>');
+            }
+        }
+
+        function renderTimeline(data) {
+            if (!data || data.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-timeline">
+                        <i class="fas fa-hourglass-start"></i>
+                        尚未记录时间节点
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            data.forEach((era) => {
+                const events = era.events || [];
+                if (events.length === 0) return;
+
+                html += `<div class="era-section">`;
+                html += `<div class="era-label"><i class="fas fa-scroll"></i> ${era.era}</div>`;
+                html += `<div class="era-line"></div>`;
+
+                events.forEach((evt) => {
+                    html += `
+                        <div class="timeline-item">
+                            <div class="event-title">${evt.title}</div>
+                            <div class="event-time"><i class="far fa-calendar-alt"></i> ${evt.time}</div>
+                            <div class="event-desc">${formatDesc(evt.desc)}</div>
+                        </div>
+                    `;
+                });
+
+                html += `</div>`;
+            });
+
+            container.innerHTML = html;
+        }
+
+        renderTimeline(timelineData);
+        console.log('时间线已加载，共 ' + timelineData.length + ' 个世纪。');
+    })();
+</script>
+
+</body>
+</html>
