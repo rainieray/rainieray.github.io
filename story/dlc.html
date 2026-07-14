@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>番外 · 九谕传说</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0d0e12;
+            color: #e8e6e3;
+            font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            padding: 2rem 1.5rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .back-nav {
+            margin-bottom: 2rem;
+        }
+        .back-nav a {
+            color: #b8a788;
+            text-decoration: none;
+            font-size: 0.95rem;
+            border: 1px solid #2a2e38;
+            padding: 0.4rem 1.2rem;
+            border-radius: 30px;
+            transition: 0.2s;
+            display: inline-block;
+        }
+        .back-nav a:hover {
+            background: #1e222b;
+            border-color: #b8a788;
+        }
+        .back-nav a i {
+            margin-right: 0.5rem;
+        }
+
+        .page-header {
+            border-bottom: 1px solid #2a2c33;
+            padding-bottom: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        .page-header h1 {
+            font-size: 2.4rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            color: #f2e9d0;
+        }
+        .page-header h1 i {
+            color: #b8a788;
+            margin-right: 0.8rem;
+        }
+        .page-header .sub {
+            color: #9a9a9a;
+            font-size: 1rem;
+            margin-top: 0.3rem;
+        }
+
+        .section-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        .section-card {
+            background: #14181f;
+            border: 1px solid #2a2e38;
+            border-radius: 24px;
+            padding: 2.5rem 1.8rem;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .section-card:hover {
+            border-color: #b8a788;
+            background: #1a1e27;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+        }
+        .section-card .icon {
+            font-size: 3.2rem;
+            color: #b8a788;
+        }
+        .section-card .title {
+            font-size: 1.8rem;
+            font-weight: 300;
+            color: #f2e9d0;
+            letter-spacing: 2px;
+        }
+        .section-card .sub {
+            color: #9a9a9a;
+            font-size: 0.95rem;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0.5rem;
+            left: 0.5rem;
+            right: 0.5rem;
+            bottom: 0.5rem;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 0.5rem;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-box {
+            background: #171b23;
+            border: 1px solid #3a3f4a;
+            border-radius: 28px;
+            max-width: 1400px;
+            width: 100%;
+            height: 100%;
+            max-height: 100%;
+            padding: 1.5rem 1.8rem 1.8rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.9);
+            position: relative;
+            animation: fadeUp 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        @keyframes fadeUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-box .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #2a2e38;
+            padding-bottom: 0.6rem;
+            margin-bottom: 1rem;
+            flex-shrink: 0;
+        }
+        .modal-box .modal-header h3 {
+            font-size: 1.6rem;
+            font-weight: 300;
+            color: #f2e9d0;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        .modal-box .modal-header h3 i {
+            color: #b8a788;
+        }
+        .modal-box .modal-close {
+            background: none;
+            border: none;
+            color: #8f8f8f;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: 0.2s;
+            padding: 0 0.4rem;
+        }
+        .modal-box .modal-close:hover {
+            color: #e8e6e3;
+        }
+
+        .modal-body {
+            display: flex;
+            flex: 1;
+            gap: 1.5rem;
+            overflow: hidden;
+            min-height: 0;
+        }
+
+        .modal-sidebar {
+            width: 260px;
+            min-width: 200px;
+            background: #0d1117;
+            border-radius: 16px;
+            border: 1px solid #2a2e38;
+            padding: 0.8rem 0.2rem 0.8rem 0.8rem;
+            overflow-y: auto;
+            flex-shrink: 0;
+            height: 100%;
+        }
+        .modal-sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .modal-sidebar::-webkit-scrollbar-thumb {
+            background: #3a3f4a;
+            border-radius: 8px;
+        }
+        .modal-sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .sidebar-item {
+            padding: 0.3rem 0.8rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.15s;
+            color: #b0a898;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .sidebar-item:hover {
+            background: #1e2632;
+            color: #f2e9d0;
+        }
+        .sidebar-item.active {
+            background: #2a2e38;
+            color: #f2e9d0;
+            border-left: 2px solid #b8a788;
+        }
+        .sidebar-item .fa-chevron-down,
+        .sidebar-item .fa-chevron-right {
+            font-size: 0.6rem;
+            color: #6a6a6a;
+            width: 14px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        .sidebar-item .chap-indent {
+            padding-left: 1.2rem;
+            font-size: 0.8rem;
+            color: #9a8a7a;
+        }
+        .sidebar-item .chap-indent.active {
+            color: #f2e9d0;
+        }
+
+        /* 视图切换按钮 */
+        .view-toggle-area {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 0.6rem;
+            padding: 0 0.2rem;
+            flex-shrink: 0;
+        }
+        .view-toggle-btn {
+            background: #0d1117;
+            border: 1px solid #3a3f4a;
+            border-radius: 30px;
+            padding: 0.25rem 1.2rem;
+            color: #d0cbc0;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .view-toggle-btn:hover {
+            border-color: #b8a788;
+            color: #f2e9d0;
+            background: #1a1e27;
+        }
+        .view-toggle-btn i {
+            font-size: 0.9rem;
+        }
+        .view-toggle-btn.active-view {
+            border-color: #b8a788;
+            background: #1e2632;
+            color: #f2e9d0;
+        }
+
+        .modal-content {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 0.3rem;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+        .modal-content::-webkit-scrollbar {
+            width: 4px;
+        }
+        .modal-content::-webkit-scrollbar-thumb {
+            background: #3a3f4a;
+            border-radius: 8px;
+        }
+        .modal-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .content-text {
+            color: #d0cbc0;
+            font-size: 0.98rem;
+            line-height: 1.9;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            flex: 1;
+        }
+        .content-text p {
+            margin-bottom: 0.4rem;
+        }
+        .content-text .empty-msg {
+            color: #7a7a7a;
+            font-style: italic;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .map-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.2rem;
+            padding: 0.5rem 0.2rem 1rem 0.2rem;
+            justify-content: flex-start;
+            align-items: flex-start;
+        }
+        .map-node {
+            background: #1a1e27;
+            border: 1px solid #3a3f4a;
+            border-radius: 30px;
+            padding: 0.4rem 1.4rem;
+            font-size: 0.95rem;
+            color: #e8e6e3;
+            cursor: default;
+            transition: 0.15s;
+            position: relative;
+            display: inline-block;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+        .map-node:hover {
+            border-color: #b8a788;
+            background: #242b36;
+            transform: scale(1.02);
+        }
+
+        .map-tooltip {
+            position: fixed;
+            background: #0d1117;
+            border: 1px solid #b8a788;
+            border-radius: 20px;
+            padding: 0.8rem 1.5rem;
+            max-width: 300px;
+            color: #e8e6e3;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(4px);
+            pointer-events: none;
+            z-index: 2000;
+            opacity: 0;
+            transition: opacity 0.15s ease;
+            white-space: normal;
+            word-break: break-word;
+        }
+        .map-tooltip.visible {
+            opacity: 1;
+        }
+        .map-tooltip .tooltip-title {
+            font-weight: 500;
+            color: #f2e9d0;
+            border-bottom: 1px solid #2a2e38;
+            padding-bottom: 0.2rem;
+            margin-bottom: 0.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .map-tooltip .tooltip-title i {
+            color: #b8a788;
+        }
+        .map-tooltip .tooltip-body {
+            color: #c0b8aa;
+        }
+
+        .content-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #2a2e38;
+            padding-top: 0.8rem;
+            margin-top: 0.8rem;
+            flex-shrink: 0;
+            gap: 1rem;
+        }
+        .content-nav .nav-btn {
+            background: #0d1117;
+            border: 1px solid #3a3f4a;
+            border-radius: 30px;
+            padding: 0.3rem 1.2rem;
+            color: #d0cbc0;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .content-nav .nav-btn:hover {
+            border-color: #b8a788;
+            color: #f2e9d0;
+            background: #1a1e27;
+        }
+        .content-nav .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            border-color: #2a2e38;
+            color: #5d5d5d;
+        }
+        .content-nav .nav-btn:disabled:hover {
+            background: #0d1117;
+            border-color: #2a2e38;
+            color: #5d5d5d;
+        }
+        .content-nav .page-info {
+            color: #7a7a7a;
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 800px) {
+            .section-grid {
+                grid-template-columns: 1fr;
+            }
+            .modal-body {
+                flex-direction: column;
+                gap: 0.8rem;
+            }
+            .modal-sidebar {
+                width: 100%;
+                min-width: unset;
+                height: 160px;
+                padding: 0.5rem 0.2rem 0.5rem 0.5rem;
+                flex-shrink: 0;
+            }
+            .modal-box {
+                padding: 1rem;
+            }
+            .modal-box .modal-header h3 {
+                font-size: 1.2rem;
+            }
+            .view-toggle-area {
+                flex-wrap: wrap;
+            }
+        }
+        @media (max-width: 500px) {
+            .modal-sidebar {
+                height: 120px;
+            }
+            .content-nav {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .content-nav .nav-btn {
+                padding: 0.2rem 0.8rem;
+                font-size: 0.8rem;
+            }
+            .map-node {
+                padding: 0.2rem 1rem;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <div class="back-nav">
+            <a href="index.html"><i class="fas fa-arrow-left"></i> 返回主页</a>
+        </div>
+
+        <div class="page-header">
+            <h1><i class="fas fa-book-open"></i> 番外篇</h1>
+            <div class="sub">未被记载的故事，于此显现——</div>
+        </div>
+
+        <div class="section-grid">
+            <div class="section-card" id="storyDlcBtn">
+                <div class="icon"><i class="fas fa-scroll"></i></div>
+                <div class="title">故事番外</div>
+                <div class="sub">未被记录的篇章</div>
+            </div>
+            <div class="section-card" id="charDlcBtn">
+                <div class="icon"><i class="fas fa-user-astronaut"></i></div>
+                <div class="title">角色番外</div>
+                <div class="sub">不为人知的过往</div>
+            </div>
+        </div>
+
+        <!-- 故事番外弹窗 -->
+        <div class="modal-overlay" id="storyModal">
+            <div class="modal-box">
+                <div class="modal-header">
+                    <h3><i class="fas fa-scroll"></i> 故事番外</h3>
+                    <button class="modal-close" data-close="storyModal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-sidebar" id="storySidebar"></div>
+                    <div class="modal-content">
+                        <!-- 视图切换按钮 -->
+                        <div class="view-toggle-area" id="storyViewToggle">
+                            <button class="view-toggle-btn active-view" id="storyTextViewBtn"><i class="fas fa-align-left"></i> 文章</button>
+                            <button class="view-toggle-btn" id="storyMapViewBtn"><i class="fas fa-map"></i> 地图</button>
+                        </div>
+                        <div class="content-text" id="storyContent">
+                            <p class="empty-msg">加载中...</p>
+                        </div>
+                        <div class="content-nav" id="storyNav">
+                            <button class="nav-btn" id="storyPrev"><i class="fas fa-chevron-left"></i> 上一章</button>
+                            <span class="page-info" id="storyPageInfo">0 / 0</span>
+                            <button class="nav-btn" id="storyNext">下一章 <i class="fas fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 角色番外弹窗（无地图） -->
+        <div class="modal-overlay" id="charModal">
+            <div class="modal-box">
+                <div class="modal-header">
+                    <h3><i class="fas fa-user-astronaut"></i> 角色番外</h3>
+                    <button class="modal-close" data-close="charModal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-sidebar" id="charSidebar"></div>
+                    <div class="modal-content">
+                        <div class="content-text" id="charContent">
+                            <p class="empty-msg">加载中...</p>
+                        </div>
+                        <div class="content-nav" id="charNav">
+                            <button class="nav-btn" id="charPrev"><i class="fas fa-chevron-left"></i> 上一章</button>
+                            <span class="page-info" id="charPageInfo">0 / 0</span>
+                            <button class="nav-btn" id="charNext">下一章 <i class="fas fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 悬浮提示 -->
+        <div class="map-tooltip" id="mapTooltip">
+            <div class="tooltip-title"><i class="fas fa-location-dot"></i> <span id="tooltipTitle">地点</span></div>
+            <div class="tooltip-body" id="tooltipBody">介绍内容</div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // ============================================================
+            // 解析 story dlc
+            // 格式：
+            //   # 分卷标题
+            //   @map 节点名 | 介绍文字
+            //   ## 章节标题
+            //   正文内容
+            // ============================================================
+            function parseStoryDlc(text) {
+                if (!text || text.trim() === '') return [];
+                const lines = text.split('\n');
+                const volumes = [];
+                let currentVol = null;
+                let currentChap = null;
+                let currentBody = [];
+                let currentMapNodes = [];
+
+                function flushChapter() {
+                    if (currentVol && currentChap) {
+                        currentVol.chapters.push({
+                            title: currentChap,
+                            body: currentBody.join('\n').trim()
+                        });
+                        currentChap = null;
+                        currentBody = [];
+                    }
+                }
+
+                for (let i = 0; i < lines.length; i++) {
+                    let line = lines[i];
+                    const trimmed = line.trim();
+
+                    if (trimmed.startsWith('@map') && currentVol) {
+                        const mapPart = trimmed.substring(4).trim();
+                        const sepIndex = mapPart.indexOf('|');
+                        let nodeName = mapPart;
+                        let desc = '（暂无介绍）';
+                        if (sepIndex !== -1) {
+                            nodeName = mapPart.substring(0, sepIndex).trim();
+                            desc = mapPart.substring(sepIndex + 1).trim();
+                        }
+                        if (nodeName) {
+                            currentVol.mapNodes = currentVol.mapNodes || [];
+                            currentVol.mapNodes.push({ name: nodeName, desc: desc });
+                        }
+                        continue;
+                    }
+
+                    if (trimmed.startsWith('#')) {
+                        if (trimmed.startsWith('##')) {
+                            flushChapter();
+                            currentChap = trimmed.substring(2).trim();
+                            currentBody = [];
+                        } else {
+                            flushChapter();
+                            const volTitle = trimmed.substring(1).trim();
+                            currentVol = { title: volTitle, chapters: [], mapNodes: [] };
+                            volumes.push(currentVol);
+                            currentChap = null;
+                            currentBody = [];
+                        }
+                    } else {
+                        if (currentVol && currentChap !== null) {
+                            currentBody.push(line);
+                        }
+                    }
+                }
+                flushChapter();
+
+                // 兜底：无分卷但有内容
+                if (volumes.length === 0 && text.trim() !== '') {
+                    const fallback = { title: '未归类', chapters: [], mapNodes: [] };
+                    const lines2 = text.split('\n');
+                    let chapTitle = '未命名章节';
+                    let body = [];
+                    for (let i = 0; i < lines2.length; i++) {
+                        let line = lines2[i];
+                        const trimmed = line.trim();
+                        if (trimmed.startsWith('@map')) {
+                            const mapPart = trimmed.substring(4).trim();
+                            const sepIndex = mapPart.indexOf('|');
+                            let nodeName = mapPart;
+                            let desc = '（暂无介绍）';
+                            if (sepIndex !== -1) {
+                                nodeName = mapPart.substring(0, sepIndex).trim();
+                                desc = mapPart.substring(sepIndex + 1).trim();
+                            }
+                            if (nodeName) {
+                                fallback.mapNodes.push({ name: nodeName, desc: desc });
+                            }
+                            continue;
+                        }
+                        if (trimmed.startsWith('##')) {
+                            if (body.length > 0 || chapTitle) {
+                                fallback.chapters.push({
+                                    title: chapTitle,
+                                    body: body.join('\n').trim()
+                                });
+                            }
+                            chapTitle = trimmed.substring(2).trim();
+                            body = [];
+                        } else {
+                            body.push(line);
+                        }
+                    }
+                    if (body.length > 0 || chapTitle) {
+                        fallback.chapters.push({
+                            title: chapTitle,
+                            body: body.join('\n').trim()
+                        });
+                    }
+                    volumes.push(fallback);
+                }
+
+                volumes.forEach(v => {
+                    v.chapters = v.chapters.filter(c => c.title || c.body);
+                    v.mapNodes = v.mapNodes || [];
+                });
+                return volumes;
+            }
+
+            // ============================================================
+            // 解析 dlc character
+            // ============================================================
+            function parseCharDlc(text) {
+                if (!text || text.trim() === '') return [];
+                const lines = text.split('\n');
+                const chapters = [];
+                let currentTitle = null;
+                let currentBody = [];
+
+                function flush() {
+                    if (currentTitle !== null) {
+                        chapters.push({
+                            title: currentTitle,
+                            body: currentBody.join('\n').trim()
+                        });
+                        currentTitle = null;
+                        currentBody = [];
+                    }
+                }
+
+                for (let i = 0; i < lines.length; i++) {
+                    let line = lines[i];
+                    if (line.trim().startsWith('#')) {
+                        flush();
+                        currentTitle = line.trim().substring(1).trim();
+                        currentBody = [];
+                    } else {
+                        if (currentTitle !== null) {
+                            currentBody.push(line);
+                        }
+                    }
+                }
+                flush();
+                if (chapters.length === 0 && text.trim() !== '') {
+                    chapters.push({
+                        title: '未命名',
+                        body: text.trim()
+                    });
+                }
+                return chapters;
+            }
+
+            // ============================================================
+            // 弹窗控制器
+            // ============================================================
+            function createModalController(modalId, sidebarId, contentId, navPrevId, navNextId, pageInfoId, parser, filePath,
+                isStory) {
+                const modal = document.getElementById(modalId);
+                const sidebar = document.getElementById(sidebarId);
+                const content = document.getElementById(contentId);
+                const prevBtn = document.getElementById(navPrevId);
+                const nextBtn = document.getElementById(navNextId);
+                const pageInfo = document.getElementById(pageInfoId);
+
+                let data = [];
+                let flatList = [];
+                let currentIdx = 0;
+                let currentView = 'text'; // 'text' 或 'map'
+
+                const tooltip = document.getElementById('mapTooltip');
+                const tooltipTitle = document.getElementById('tooltipTitle');
+                const tooltipBody = document.getElementById('tooltipBody');
+
+                let viewToggleArea = null;
+                let textViewBtn = null;
+                let mapViewBtn = null;
+                if (isStory) {
+                    viewToggleArea = document.getElementById('storyViewToggle');
+                    textViewBtn = document.getElementById('storyTextViewBtn');
+                    mapViewBtn = document.getElementById('storyMapViewBtn');
+                }
+
+                function loadData() {
+                    fetch(filePath)
+                        .then(res => {
+                            if (!res.ok) throw new Error('文件未找到');
+                            return res.text();
+                        })
+                        .then(text => {
+                            if (!text.trim()) {
+                                data = [];
+                                flatList = [];
+                                currentIdx = 0;
+                                renderSidebar();
+                                renderContent();
+                                return;
+                            }
+                            if (isStory) {
+                                data = parseStoryDlc(text);
+                            } else {
+                                data = parseCharDlc(text);
+                            }
+                            buildFlatList();
+                            currentIdx = 0;
+                            currentView = 'text';
+                            updateViewButtons();
+                            renderSidebar();
+                            renderContent();
+                        })
+                        .catch(err => {
+                            console.warn('加载失败:', err);
+                            data = [];
+                            flatList = [];
+                            currentIdx = 0;
+                            renderSidebar();
+                            renderContent();
+                        });
+                }
+
+                function buildFlatList() {
+                    flatList = [];
+                    if (isStory) {
+                        data.forEach((vol, vi) => {
+                            vol.chapters.forEach((chap, ci) => {
+                                flatList.push({
+                                    type: 'story',
+                                    volIdx: vi,
+                                    chapIdx: ci,
+                                    title: chap.title || '未命名章节',
+                                    body: chap.body || '（暂无正文）',
+                                    volTitle: vol.title,
+                                    mapNodes: vol.mapNodes || []
+                                });
+                            });
+                        });
+                    } else {
+                        data.forEach((chap, ci) => {
+                            flatList.push({
+                                type: 'char',
+                                chapIdx: ci,
+                                title: chap.title || '未命名角色',
+                                body: chap.body || '（暂无正文）',
+                            });
+                        });
+                    }
+                }
+
+                function getCurrentMapNodes() {
+                    if (!isStory) return [];
+                    const item = flatList[currentIdx];
+                    if (!item) return [];
+                    const vol = data[item.volIdx];
+                    return vol && vol.mapNodes ? vol.mapNodes : [];
+                }
+
+                function renderSidebar() {
+                    if (flatList.length === 0) {
+                        sidebar.innerHTML =
+                            `<div class="sidebar-item" style="color:#6a6a6a;justify-content:center;padding:1rem 0;">尚无内容</div>`;
+                        return;
+                    }
+                    let html = '';
+                    if (isStory) {
+                        data.forEach((vol, vi) => {
+                            html += `<div class="sidebar-item" style="font-weight:500;color:#d0cbc0;cursor:default;padding:0.3rem 0.8rem;">
+                                <i class="fas fa-chevron-down" style="font-size:0.6rem;color:#6a6a6a;width:14px;"></i> ${vol.title || '未命名分卷'}
+                            </div>`;
+                            vol.chapters.forEach((chap, ci) => {
+                                const isActive = (flatList[currentIdx] && flatList[currentIdx].volIdx === vi &&
+                                    flatList[currentIdx].chapIdx === ci);
+                                const displayTitle = chap.title || '未命名章节';
+                                const idx = flatList.findIndex(f => f.volIdx === vi && f.chapIdx === ci);
+                                html +=
+                                    `<div class="sidebar-item chap-indent ${isActive ? 'active' : ''}" data-idx="${idx}">
+                                    ${displayTitle}
+                                </div>`;
+                            });
+                        });
+                    } else {
+                        data.forEach((chap, ci) => {
+                            const isActive = (flatList[currentIdx] && flatList[currentIdx].chapIdx === ci);
+                            html +=
+                                `<div class="sidebar-item ${isActive ? 'active' : ''}" data-idx="${ci}">
+                                ${chap.title || '未命名角色'}
+                            </div>`;
+                        });
+                    }
+                    sidebar.innerHTML = html;
+                    sidebar.querySelectorAll('.sidebar-item[data-idx]').forEach(el => {
+                        el.addEventListener('click', function() {
+                            const idx = parseInt(this.dataset.idx, 10);
+                            if (!isNaN(idx) && idx >= 0 && idx < flatList.length) {
+                                currentIdx = idx;
+                                // 保持当前视图不变
+                                renderSidebar();
+                                renderContent();
+                            }
+                        });
+                    });
+                }
+
+                function updateViewButtons() {
+                    if (!isStory) return;
+                    if (textViewBtn && mapViewBtn) {
+                        textViewBtn.classList.toggle('active-view', currentView === 'text');
+                        mapViewBtn.classList.toggle('active-view', currentView === 'map');
+                    }
+                    if (viewToggleArea) viewToggleArea.style.display = 'flex';
+                }
+
+                function renderContent() {
+                    if (flatList.length === 0) {
+                        content.innerHTML = `<p class="empty-msg">尚有故事等待发现</p>`;
+                        pageInfo.textContent = '0 / 0';
+                        prevBtn.disabled = true;
+                        nextBtn.disabled = true;
+                        if (isStory && viewToggleArea) viewToggleArea.style.display = 'none';
+                        return;
+                    }
+                    if (isStory && viewToggleArea) viewToggleArea.style.display = 'flex';
+
+                    const item = flatList[currentIdx];
+                    if (!item) {
+                        content.innerHTML = `<p class="empty-msg">内容加载异常</p>`;
+                        return;
+                    }
+
+                    // 地图视图
+                    if (isStory && currentView === 'map') {
+                        const nodes = getCurrentMapNodes();
+                        if (nodes.length === 0) {
+                            content.innerHTML =
+                                `<p class="empty-msg" style="text-align:center;padding:2rem 0;">此分卷暂无地图节点<br><span style="font-size:0.8rem;color:#6a6a6a;">使用 @map 节点名 | 介绍 来定义</span></p>`;
+                        } else {
+                            let html = `<div class="map-grid">`;
+                            nodes.forEach(node => {
+                                html +=
+                                    `<div class="map-node" data-name="${node.name}" data-desc="${node.desc}">${node.name}</div>`;
+                            });
+                            html += `</div>`;
+                            content.innerHTML = html;
+                            // 绑定悬浮
+                            content.querySelectorAll('.map-node').forEach(el => {
+                                el.addEventListener('mouseenter', function(e) {
+                                    const name = this.dataset.name || '未知';
+                                    const desc = this.dataset.desc || '（暂无介绍）';
+                                    showTooltip(e, name, desc);
+                                });
+                                el.addEventListener('mousemove', function(e) {
+                                    moveTooltip(e);
+                                });
+                                el.addEventListener('mouseleave', function() {
+                                    hideTooltip();
+                                });
+                            });
+                        }
+                    } else {
+                        // 文章视图
+                        let bodyText = item.body || '（暂无正文）';
+                        let html = bodyText.split('\n').map(line => {
+                            if (line.trim() === '') return '<br>';
+                            return `<p>${line}</p>`;
+                        }).join('');
+                        content.innerHTML = html;
+                    }
+
+                    pageInfo.textContent = `${currentIdx + 1} / ${flatList.length}`;
+                    prevBtn.disabled = (currentIdx === 0);
+                    nextBtn.disabled = (currentIdx === flatList.length - 1);
+                }
+
+                // Tooltip
+                function showTooltip(e, name, desc) {
+                    tooltipTitle.textContent = name;
+                    tooltipBody.textContent = desc;
+                    tooltip.classList.add('visible');
+                    moveTooltip(e);
+                }
+
+                function moveTooltip(e) {
+                    let x = e.clientX + 16;
+                    let y = e.clientY + 12;
+                    tooltip.style.left = x + 'px';
+                    tooltip.style.top = y + 'px';
+                    const rect = tooltip.getBoundingClientRect();
+                    if (rect.right > window.innerWidth - 10) {
+                        tooltip.style.left = (e.clientX - rect.width - 10) + 'px';
+                    }
+                    if (rect.bottom > window.innerHeight - 10) {
+                        tooltip.style.top = (e.clientY - rect.height - 10) + 'px';
+                    }
+                }
+
+                function hideTooltip() {
+                    tooltip.classList.remove('visible');
+                }
+
+                function goPrev() {
+                    if (currentIdx > 0) { currentIdx--;
+                        renderSidebar();
+                        renderContent(); }
+                }
+
+                function goNext() {
+                    if (currentIdx < flatList.length - 1) { currentIdx++;
+                        renderSidebar();
+                        renderContent(); }
+                }
+
+                function openModal() {
+                    loadData();
+                    modal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                    currentView = 'text';
+                    updateViewButtons();
+                }
+
+                function closeModal() {
+                    modal.classList.remove('active');
+                    document.body.style.overflow = '';
+                    hideTooltip();
+                }
+
+                // 视图切换
+                if (isStory) {
+                    textViewBtn.addEventListener('click', function() {
+                        if (currentView === 'text') return;
+                        currentView = 'text';
+                        updateViewButtons();
+                        renderContent();
+                    });
+                    mapViewBtn.addEventListener('click', function() {
+                        if (currentView === 'map') return;
+                        currentView = 'map';
+                        updateViewButtons();
+                        renderContent();
+                    });
+                }
+
+                prevBtn.addEventListener('click', goPrev);
+                nextBtn.addEventListener('click', goNext);
+
+                modal.querySelector('.modal-close').addEventListener('click', closeModal);
+                modal.addEventListener('click', function(e) {
+                    if (e.target === this) closeModal();
+                });
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && modal.classList.contains('active')) {
+                        closeModal();
+                    }
+                });
+
+                return { openModal, closeModal, loadData };
+            }
+
+            // ============================================================
+            // 初始化
+            // ============================================================
+            const storyCtrl = createModalController(
+                'storyModal', 'storySidebar', 'storyContent',
+                'storyPrev', 'storyNext', 'storyPageInfo',
+                parseStoryDlc, 'story dlc.txt', true
+            );
+
+            const charCtrl = createModalController(
+                'charModal', 'charSidebar', 'charContent',
+                'charPrev', 'charNext', 'charPageInfo',
+                parseCharDlc, 'dlc character.txt', false
+            );
+
+            document.getElementById('storyDlcBtn').addEventListener('click', function() {
+                storyCtrl.openModal();
+            });
+            document.getElementById('charDlcBtn').addEventListener('click', function() {
+                charCtrl.openModal();
+            });
+
+            console.log('番外篇已加载。地图功能：在 dlc story.txt 中使用 @map 节点名 | 介绍 定义节点。');
+        })();
+    </script>
+</body>
+</html>
