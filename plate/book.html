@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>书籍 · 九谕传说</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0d0e12;
+            color: #e8e6e3;
+            font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            padding: 2rem 1.5rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* ===== 返回导航 ===== */
+        .back-nav {
+            margin-bottom: 2rem;
+        }
+        .back-nav a {
+            color: #b8a788;
+            text-decoration: none;
+            font-size: 0.95rem;
+            border: 1px solid #2a2e38;
+            padding: 0.4rem 1.2rem;
+            border-radius: 30px;
+            transition: 0.2s;
+            display: inline-block;
+        }
+        .back-nav a:hover {
+            background: #1e222b;
+            border-color: #b8a788;
+        }
+        .back-nav a i {
+            margin-right: 0.5rem;
+        }
+
+        /* ===== 页面标题 ===== */
+        .page-header {
+            border-bottom: 1px solid #2a2c33;
+            padding-bottom: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        .page-header h1 {
+            font-size: 2.4rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            color: #f2e9d0;
+        }
+        .page-header h1 i {
+            color: #b8a788;
+            margin-right: 0.8rem;
+        }
+        .page-header .sub {
+            color: #9a9a9a;
+            font-size: 1rem;
+            margin-top: 0.3rem;
+        }
+
+        /* ===== 书籍网格 ===== */
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        /* ===== 书籍卡片 ===== */
+        .book-card {
+            background: #14181f;
+            border: 1px solid #2a2e38;
+            border-radius: 20px;
+            padding: 1.8rem 1.2rem 1.4rem;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.4rem;
+            position: relative;
+        }
+        .book-card:hover {
+            border-color: #b8a788;
+            background: #1a1e27;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .book-card .book-icon {
+            font-size: 3rem;
+            color: #b8a788;
+            margin-bottom: 0.2rem;
+            transition: 0.2s;
+        }
+        .book-card:hover .book-icon {
+            transform: scale(1.05);
+        }
+
+        .book-card .book-title {
+            font-size: 1.3rem;
+            font-weight: 400;
+            color: #f2e9d0;
+            letter-spacing: 1px;
+        }
+
+        .book-card .book-author {
+            font-size: 0.8rem;
+            color: #7a7a7a;
+            margin-top: 0.1rem;
+        }
+
+        .book-card .book-hint {
+            font-size: 0.7rem;
+            color: #5d5d5d;
+            margin-top: 0.4rem;
+            border-top: 1px dashed #2b2f38;
+            padding-top: 0.5rem;
+            width: 80%;
+        }
+
+        /* ===== 弹窗 (距边0.5cm) ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0.5rem;
+            left: 0.5rem;
+            right: 0.5rem;
+            bottom: 0.5rem;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 0.5rem;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-box {
+            background: #171b23;
+            border: 1px solid #3a3f4a;
+            border-radius: 28px;
+            max-width: 1400px;
+            width: 100%;
+            height: 100%;
+            max-height: 100%;
+            padding: 1.5rem 1.8rem 1.8rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.9);
+            position: relative;
+            animation: fadeUp 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        @keyframes fadeUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-box .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #2a2e38;
+            padding-bottom: 0.6rem;
+            margin-bottom: 1rem;
+            flex-shrink: 0;
+        }
+        .modal-box .modal-header h3 {
+            font-size: 1.6rem;
+            font-weight: 300;
+            color: #f2e9d0;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        .modal-box .modal-header h3 i {
+            color: #b8a788;
+        }
+        .modal-box .modal-close {
+            background: none;
+            border: none;
+            color: #8f8f8f;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: 0.2s;
+            padding: 0 0.4rem;
+        }
+        .modal-box .modal-close:hover {
+            color: #e8e6e3;
+        }
+
+        /* ===== 弹窗主体: 左目录 + 右正文 ===== */
+        .modal-body {
+            display: flex;
+            flex: 1;
+            gap: 1.5rem;
+            overflow: hidden;
+            min-height: 0;
+        }
+
+        /* 左侧目录 (书籍风格) */
+        .modal-sidebar {
+            width: 260px;
+            min-width: 200px;
+            background: #0d1117;
+            border-radius: 16px;
+            border: 1px solid #2a2e38;
+            padding: 0.8rem 0.2rem 0.8rem 0.8rem;
+            overflow-y: auto;
+            flex-shrink: 0;
+            height: 100%;
+        }
+        .modal-sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .modal-sidebar::-webkit-scrollbar-thumb {
+            background: #3a3f4a;
+            border-radius: 8px;
+        }
+        .modal-sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .sidebar-item {
+            padding: 0.35rem 0.8rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.15s;
+            color: #b0a898;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .sidebar-item:hover {
+            background: #1e2632;
+            color: #f2e9d0;
+        }
+        .sidebar-item.active {
+            background: #2a2e38;
+            color: #f2e9d0;
+            border-left: 2px solid #b8a788;
+        }
+        .sidebar-item .chap-num {
+            color: #6a6a6a;
+            font-size: 0.7rem;
+            width: 20px;
+            flex-shrink: 0;
+        }
+        .sidebar-item .chap-title {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* ===== PDF 类型标记 ===== */
+        .sidebar-item .pdf-badge {
+            font-size: 0.55rem;
+            background: #b8a788;
+            color: #0d0e12;
+            padding: 0.1rem 0.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        /* 右侧正文 */
+        .modal-content {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 0.3rem;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+        .modal-content::-webkit-scrollbar {
+            width: 4px;
+        }
+        .modal-content::-webkit-scrollbar-thumb {
+            background: #3a3f4a;
+            border-radius: 8px;
+        }
+        .modal-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .content-text {
+            color: #d0cbc0;
+            font-size: 0.98rem;
+            line-height: 1.9;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            flex: 1;
+        }
+        .content-text p {
+            margin-bottom: 0.4rem;
+        }
+        .content-text .empty-msg {
+            color: #7a7a7a;
+            font-style: italic;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        /* ===== PDF 专用样式 ===== */
+        .content-pdf {
+            width: 100%;
+            height: 100%;
+            min-height: 500px;
+            border: none;
+            border-radius: 8px;
+            background: #0d1117;
+            flex: 1;
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 800px) {
+            .book-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            }
+            .modal-body {
+                flex-direction: column;
+                gap: 0.8rem;
+            }
+            .modal-sidebar {
+                width: 100%;
+                min-width: unset;
+                height: 160px;
+                padding: 0.5rem 0.2rem 0.5rem 0.5rem;
+                flex-shrink: 0;
+            }
+            .modal-box {
+                padding: 1rem;
+            }
+            .modal-box .modal-header h3 {
+                font-size: 1.2rem;
+            }
+            .book-card .book-title {
+                font-size: 1.1rem;
+            }
+            .content-pdf {
+                min-height: 300px;
+            }
+        }
+        @media (max-width: 500px) {
+            .modal-sidebar {
+                height: 120px;
+            }
+            .book-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 1rem;
+            }
+            .book-card {
+                padding: 1.2rem 0.8rem;
+            }
+            .book-card .book-icon {
+                font-size: 2.2rem;
+            }
+            .book-card .book-title {
+                font-size: 1rem;
+            }
+        }
+        @media (max-width: 380px) {
+            .book-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ===== 空状态 ===== */
+        .empty-books {
+            grid-column: 1 / -1;
+            color: #7a7a7a;
+            font-style: italic;
+            text-align: center;
+            padding: 3rem 0;
+            border: 1px dashed #2a2e38;
+            border-radius: 20px;
+        }
+        .empty-books i {
+            font-size: 2.5rem;
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #5d5d5d;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- ===== 返回导航 ===== -->
+    <div class="back-nav">
+        <a href="index.html"><i class="fas fa-arrow-left"></i> 返回主页</a>
+    </div>
+
+    <!-- ===== 页面标题 ===== -->
+    <div class="page-header">
+        <h1><i class="fas fa-book"></i> 书籍</h1>
+        <div class="sub">智慧与学识，于此凝聚——</div>
+    </div>
+
+    <!-- ===== 书籍网格 ===== -->
+    <div class="book-grid" id="bookGrid">
+        <div class="empty-books">
+            <i class="fas fa-book-open"></i>
+            加载书籍中...
+        </div>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- 书籍弹窗 -->
+    <!-- ========================================================= -->
+    <div class="modal-overlay" id="bookModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fas fa-book"></i> <span id="modalBookTitle">书籍</span></h3>
+                <button class="modal-close" data-close="bookModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-sidebar" id="bookSidebar">
+                    <!-- 由JS动态生成 -->
+                </div>
+                <div class="modal-content">
+                    <div class="content-text" id="bookContent">
+                        <p class="empty-msg">加载中...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    (function() {
+        // ============================================================
+        //  书籍解析器 (增强版，支持 PDF)
+        //  格式：
+        //    # 书名（作为板块标题）
+        //    ## 章节标题
+        //    正文内容（多行）
+        //    ## 下一章节
+        //    # 下一本书
+        //
+        //  特殊：如果章节内容以 "[PDF]文件名.pdf" 开头，则显示为 PDF
+        //  例如：
+        //    ## 地图集
+        //    [PDF]maps/世界地图.pdf
+        // ============================================================
+        function parseBooks(text) {
+            if (!text || text.trim() === '') return [];
+            const lines = text.split('\n');
+            const books = [];
+            let currentBook = null;
+            let currentChapter = null;
+            let currentBody = [];
+
+            function flushChapter() {
+                if (currentBook && currentChapter !== null) {
+                    // ⭐ 检测是否为 PDF 类型
+                    const bodyText = currentBody.join('\n').trim();
+                    const pdfMatch = bodyText.match(/^\[PDF\]\s*(.+\.pdf)/i);
+                    const chapterData = {
+                        title: currentChapter,
+                        body: bodyText,
+                        type: pdfMatch ? 'pdf' : 'text',
+                        pdfSrc: pdfMatch ? pdfMatch[1].trim() : null
+                    };
+                    currentBook.chapters.push(chapterData);
+                    currentChapter = null;
+                    currentBody = [];
+                }
+            }
+
+            function flushBook() {
+                if (currentBook) {
+                    flushChapter();
+                    books.push(currentBook);
+                    currentBook = null;
+                }
+            }
+
+            for (let i = 0; i < lines.length; i++) {
+                let line = lines[i];
+                let trimmed = line.trim();
+
+                if (trimmed.startsWith('#')) {
+                    if (trimmed.startsWith('##')) {
+                        flushChapter();
+                        currentChapter = trimmed.substring(2).trim();
+                        currentBody = [];
+                    } else {
+                        flushBook();
+                        const title = trimmed.substring(1).trim();
+                        currentBook = { title: title, chapters: [] };
+                        currentChapter = null;
+                        currentBody = [];
+                    }
+                } else {
+                    if (currentBook && currentChapter !== null) {
+                        currentBody.push(line);
+                    }
+                }
+            }
+
+            flushBook();
+
+            // 如果没有书籍但有内容，作为一本默认书
+            if (books.length === 0 && text.trim() !== '') {
+                const fallback = { title: '未命名典籍', chapters: [] };
+                const lines2 = text.split('\n');
+                let chapTitle = '序章';
+                let body = [];
+                for (let i = 0; i < lines2.length; i++) {
+                    let line = lines2[i];
+                    if (line.trim().startsWith('##')) {
+                        if (body.length > 0 || chapTitle) {
+                            const bText = body.join('\n').trim();
+                            const pdfMatch = bText.match(/^\[PDF\]\s*(.+\.pdf)/i);
+                            fallback.chapters.push({
+                                title: chapTitle,
+                                body: bText,
+                                type: pdfMatch ? 'pdf' : 'text',
+                                pdfSrc: pdfMatch ? pdfMatch[1].trim() : null
+                            });
+                        }
+                        chapTitle = line.trim().substring(2).trim();
+                        body = [];
+                    } else {
+                        body.push(line);
+                    }
+                }
+                if (body.length > 0 || chapTitle) {
+                    const bText = body.join('\n').trim();
+                    const pdfMatch = bText.match(/^\[PDF\]\s*(.+\.pdf)/i);
+                    fallback.chapters.push({
+                        title: chapTitle,
+                        body: bText,
+                        type: pdfMatch ? 'pdf' : 'text',
+                        pdfSrc: pdfMatch ? pdfMatch[1].trim() : null
+                    });
+                }
+                books.push(fallback);
+            }
+
+            // 过滤空章节
+            books.forEach(b => {
+                b.chapters = b.chapters.filter(c => c.title || c.body);
+            });
+
+            return books;
+        }
+
+        // ============================================================
+        //  渲染书籍网格
+        // ============================================================
+        const grid = document.getElementById('bookGrid');
+        const modal = document.getElementById('bookModal');
+        const sidebar = document.getElementById('bookSidebar');
+        const content = document.getElementById('bookContent');
+        const modalTitle = document.getElementById('modalBookTitle');
+
+        let allBooks = [];
+        let currentBookIndex = 0;
+        let currentChapterIndex = 0;
+
+        function renderBooks(books) {
+            if (!books || books.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-books">
+                        <i class="fas fa-book-open"></i>
+                        尚未收录书籍
+                        <span style="display:block;font-size:0.8rem;color:#5d5d5d;margin-top:0.5rem;">
+                            （请创建 book.txt）
+                        </span>
+                    </div>
+                `;
+                return;
+            }
+
+            allBooks = books;
+            let html = '';
+            books.forEach((book, idx) => {
+                const icon = book.title.includes('预言') ? 'fa-gem' :
+                             book.title.includes('史') ? 'fa-scroll' :
+                             book.title.includes('魔法') || book.title.includes('咒') ? 'fa-wand-magic-sparkles' :
+                             'fa-book';
+                html += `
+                    <div class="book-card" data-book-index="${idx}">
+                        <div class="book-icon"><i class="fas ${icon}"></i></div>
+                        <div class="book-title">${escapeHtml(book.title)}</div>
+                        <div class="book-author"><i class="fas fa-feather"></i> 共 ${book.chapters.length} 章</div>
+                        <div class="book-hint"><i class="fas fa-mouse-pointer"></i> 点击阅读</div>
+                    </div>
+                `;
+            });
+            grid.innerHTML = html;
+
+            grid.querySelectorAll('.book-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const idx = parseInt(this.dataset.bookIndex, 10);
+                    if (!isNaN(idx) && idx >= 0 && idx < allBooks.length) {
+                        openBook(idx);
+                    }
+                });
+            });
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/&/g, '&amp;')
+                      .replace(/</g, '&lt;')
+                      .replace(/>/g, '&gt;')
+                      .replace(/"/g, '&quot;')
+                      .replace(/'/g, '&#039;');
+        }
+
+        // ============================================================
+        //  打开书籍弹窗
+        // ============================================================
+        function openBook(bookIdx) {
+            const book = allBooks[bookIdx];
+            if (!book) return;
+
+            currentBookIndex = bookIdx;
+            currentChapterIndex = 0;
+
+            modalTitle.textContent = book.title || '书籍';
+
+            // ⭐ 渲染侧边栏，显示 PDF 标记
+            let sidebarHtml = '';
+            book.chapters.forEach((chap, ci) => {
+                const isActive = (ci === 0);
+                const isPdf = chap.type === 'pdf';
+                sidebarHtml += `
+                    <div class="sidebar-item ${isActive ? 'active' : ''}" data-chap-index="${ci}">
+                        <span class="chap-num">${String(ci + 1).padStart(2, '0')}</span>
+                        <span class="chap-title">${escapeHtml(chap.title || '未命名章节')}</span>
+                        ${isPdf ? '<span class="pdf-badge">PDF</span>' : ''}
+                    </div>
+                `;
+            });
+            sidebar.innerHTML = sidebarHtml;
+
+            renderChapter(0);
+
+            sidebar.querySelectorAll('.sidebar-item').forEach(el => {
+                el.addEventListener('click', function() {
+                    const ci = parseInt(this.dataset.chapIndex, 10);
+                    if (!isNaN(ci) && ci >= 0 && ci < book.chapters.length) {
+                        currentChapterIndex = ci;
+                        renderChapter(ci);
+                        sidebar.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active'));
+                        this.classList.add('active');
+                    }
+                });
+            });
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // ⭐ 核心修改：渲染章节（支持 PDF）
+        function renderChapter(chapIdx) {
+            const book = allBooks[currentBookIndex];
+            if (!book || chapIdx < 0 || chapIdx >= book.chapters.length) {
+                content.innerHTML = `<p class="empty-msg">章节内容缺失</p>`;
+                return;
+            }
+            const chapter = book.chapters[chapIdx];
+
+            if (chapter.type === 'pdf' && chapter.pdfSrc) {
+                // PDF 模式：用 iframe 显示
+                content.innerHTML = `
+                    <iframe class="content-pdf" src="${escapeHtml(chapter.pdfSrc)}"></iframe>
+                `;
+            } else {
+                // 文本模式
+                let bodyText = chapter.body || '（暂无正文）';
+                // 如果 body 以 [PDF] 开头但没匹配到（容错），去除标记
+                bodyText = bodyText.replace(/^\[PDF\]\s*.+\.pdf\s*/i, '').trim();
+                if (!bodyText) bodyText = '（暂无正文）';
+                let html = bodyText.split('\n').map(line => {
+                    if (line.trim() === '') return '<br>';
+                    return `<p>${escapeHtml(line)}</p>`;
+                }).join('');
+                content.innerHTML = html;
+            }
+        }
+
+        // ============================================================
+        //  关闭弹窗
+        // ============================================================
+        function closeModal() {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        modal.querySelector('.modal-close').addEventListener('click', closeModal);
+        modal.addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && modal.classList.contains('active')) {
+                closeModal();
+            }
+        });
+
+        // ============================================================
+        //  加载 book.txt
+        // ============================================================
+        function loadBooks() {
+            fetch('book.txt')
+                .then(res => {
+                    if (!res.ok) throw new Error('book.txt 未找到');
+                    return res.text();
+                })
+                .then(text => {
+                    const books = parseBooks(text);
+                    renderBooks(books);
+                })
+                .catch(err => {
+                    console.warn('加载书籍失败:', err);
+                    grid.innerHTML = `
+                        <div class="empty-books">
+                            <i class="fas fa-book-open"></i>
+                            书籍尚未书写
+                            <span style="display:block;font-size:0.8rem;color:#5d5d5d;margin-top:0.5rem;">
+                                （请创建 book.txt）
+                            </span>
+                        </div>
+                    `;
+                });
+        }
+
+        loadBooks();
+    })();
+</script>
+
+</body>
+</html>
