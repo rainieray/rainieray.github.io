@@ -194,7 +194,7 @@
             background: #0d1117;
             border-radius: 16px;
             border: 1px solid #2a2e38;
-            padding: 0.5rem 0.2rem 0.5rem 0.5rem;
+            padding: 0.8rem 0.2rem 0.8rem 0.8rem;
             overflow-y: auto;
             flex-shrink: 0;
             height: 100%;
@@ -223,6 +223,7 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            user-select: none;
         }
         .sidebar-item:hover {
             background: #1e2632;
@@ -249,36 +250,51 @@
             transform: rotate(0deg);
         }
         .sidebar-item .chap-indent {
-            padding-left: 1.8rem;
+            padding-left: 1.2rem;
             font-size: 0.8rem;
             color: #9a8a7a;
-            display: none;  /* 默认折叠 */
+            display: block;
         }
         .sidebar-item .chap-indent.active {
             color: #f2e9d0;
         }
-        .sidebar-item .chap-indent.visible {
-            display: flex;
+
+        /* 折叠容器 */
+        .vol-children {
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            max-height: 0;
         }
-        .sidebar-item .vol-toggle {
+        .vol-children.open {
+            max-height: 800px;
+        }
+
+        .sidebar-vol-header {
+            padding: 0.3rem 0.8rem;
+            border-radius: 8px;
             cursor: pointer;
-            user-select: none;
+            transition: 0.15s;
+            color: #d0cbc0;
+            font-size: 0.9rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            width: 100%;
+            user-select: none;
+            font-weight: 500;
         }
-        .sidebar-item .vol-toggle i {
-            transition: transform 0.25s;
+        .sidebar-vol-header:hover {
+            background: #1e2632;
+            color: #f2e9d0;
         }
-        .sidebar-item .vol-toggle .icon-chevron {
+        .sidebar-vol-header .toggle-icon {
             font-size: 0.6rem;
             color: #6a6a6a;
             width: 14px;
             text-align: center;
             flex-shrink: 0;
+            transition: transform 0.25s;
         }
-        .sidebar-item .vol-toggle .icon-chevron.open {
+        .sidebar-vol-header .toggle-icon.open {
             transform: rotate(90deg);
         }
 
@@ -594,7 +610,12 @@
     <script>
         (function() {
             // ============================================================
-            // 解析 dlc story (带折叠分卷支持)
+            // 解析 dlc story
+            // 格式：
+            //   # 分卷标题
+            //   @map 节点名 | 介绍文字
+            //   ## 章节标题
+            //   正文内容
             // ============================================================
             function parseStoryDlc(text) {
                 if (!text || text.trim() === '') return [];
@@ -606,7 +627,7 @@
                 let currentMapNodes = [];
 
                 function flushChapter() {
-                    if (currentVol && currentChap !== null) {
+                    if (currentVol && currentChap) {
                         currentVol.chapters.push({
                             title: currentChap,
                             body: currentBody.join('\n').trim()
@@ -753,7 +774,7 @@
             }
 
             // ============================================================
-            // 弹窗控制器 (支持折叠卷)
+            // 弹窗控制器
             // ============================================================
             function createModalController(modalId, sidebarId, contentId, navPrevId, navNextId, pageInfoId, parser, filePath,
                 isStory) {
@@ -768,8 +789,8 @@
                 let flatList = [];
                 let currentIdx = 0;
                 let currentView = 'text';
-                // 记录每个分卷的折叠状态: key = volTitle, value = true(展开)
-                let volCollapseMap = {};
+                // 记录每个分卷的折叠状态
+                let volCollapseState = {};
 
                 const tooltip = document.getElementById('mapTooltip');
                 const tooltipTitle = document.getElementById('tooltipTitle');
@@ -800,13 +821,16 @@
                             } else {
                                 if (isStory) {
                                     data = parseStoryDlc(text);
-                                    // 初始化折叠状态：默认全部展开
-                                    data.forEach(v => { volCollapseMap[v.title] = true; });
                                 } else {
                                     data = parseCharDlc(text);
                                 }
                                 buildFlatList();
                                 currentIdx = 0;
+                                // 初始化折叠状态：默认全部展开
+                                volCollapseState = {};
+                                data.forEach((vol, vi) => {
+                                    volCollapseState[vi] = true;
+                                });
                             }
                             dataLoaded = true;
                             updateViewButtons();
@@ -839,19 +863,22 @@
                                     mapNodes: vol.mapNodes || []
                                 });
                             });
-                            // 如果没有章节但存在地图节点，添加占位
-                            if (vol.chapters.length === 0 && vol.mapNodes && vol.mapNodes.length > 0) {
-                                flatList.push({
-                                    type: 'story',
-                                    volIdx: vi,
-                                    chapIdx: -1,
-                                    title: '🗺️ 地图节点',
-                                    body: '（此分卷仅有地图节点）',
-                                    volTitle: vol.title,
-                                    mapNodes: vol.mapNodes || []
-                                });
-                            }
                         });
+                        if (flatList.length === 0 && data.length > 0) {
+                            data.forEach((vol, vi) => {
+                                if (vol.mapNodes && vol.mapNodes.length > 0) {
+                                    flatList.push({
+                                        type: 'story',
+                                        volIdx: vi,
+                                        chapIdx: -1,
+                                        title: '地图视图',
+                                        body: '（此分卷仅有地图节点）',
+                                        volTitle: vol.title,
+                                        mapNodes: vol.mapNodes || []
+                                    });
+                                }
+                            });
+                        }
                     } else {
                         data.forEach((chap, ci) => {
                             flatList.push({
@@ -873,7 +900,14 @@
                     return vol && vol.mapNodes ? vol.mapNodes : [];
                 }
 
-                // ----- 渲染侧边栏 (折叠分卷) -----
+                function toggleVol(volIdx) {
+                    if (volCollapseState[volIdx] === undefined) {
+                        volCollapseState[volIdx] = true;
+                    }
+                    volCollapseState[volIdx] = !volCollapseState[volIdx];
+                    renderSidebar();
+                }
+
                 function renderSidebar() {
                     if (!dataLoaded) {
                         sidebar.innerHTML =
@@ -885,7 +919,6 @@
                             `<div class="sidebar-item" style="color:#6a6a6a;justify-content:center;padding:1rem 0;">尚无内容</div>`;
                         return;
                     }
-
                     let html = '';
                     if (isStory) {
                         data.forEach((vol, vi) => {
@@ -893,44 +926,49 @@
                             const hasMapOnly = vol.mapNodes && vol.mapNodes.length > 0 && vol.chapters.length === 0;
                             if (!hasChaps && !hasMapOnly) return;
 
-                            const isExpanded = volCollapseMap[vol.title] !== false; // 默认展开
-                            const iconClass = isExpanded ? 'fa-chevron-down' : 'fa-chevron-right';
-
-                            html += `<div class="sidebar-item" style="font-weight:500;color:#d0cbc0;padding:0.2rem 0.8rem;display:block;">
-                                <div class="vol-toggle" data-vol="${vol.title}">
-                                    <i class="fas ${iconClass} icon-chevron ${isExpanded ? 'open' : ''}" style="font-size:0.6rem;color:#6a6a6a;width:14px;text-align:center;"></i>
-                                    <span>${vol.title || '未命名分卷'}</span>
-                                </div>
-                            </div>`;
-
-                            // 章节列表 (根据折叠状态控制显示)
+                            const isOpen = volCollapseState[vi] !== undefined ? volCollapseState[vi] : true;
+                            const volItems = [];
+                            // 收集该分卷下所有可点击条目
                             vol.chapters.forEach((chap, ci) => {
                                 const isActive = (flatList[currentIdx] && flatList[currentIdx].volIdx === vi &&
                                     flatList[currentIdx].chapIdx === ci);
                                 const displayTitle = chap.title || '未命名章节';
                                 const idx = flatList.findIndex(f => f.volIdx === vi && f.chapIdx === ci);
                                 if (idx !== -1) {
-                                    const visibleClass = isExpanded ? 'visible' : '';
-                                    html +=
-                                        `<div class="sidebar-item chap-indent ${isActive ? 'active' : ''} ${visibleClass}" data-idx="${idx}" data-vol="${vol.title}">
-                                        ${displayTitle}
-                                    </div>`;
+                                    volItems.push({
+                                        idx: idx,
+                                        isActive: isActive,
+                                        displayTitle: displayTitle,
+                                        isMap: false
+                                    });
                                 }
                             });
-
-                            // 地图占位
                             if (vol.chapters.length === 0 && vol.mapNodes && vol.mapNodes.length > 0) {
                                 const idx = flatList.findIndex(f => f.volIdx === vi && f.chapIdx === -1);
                                 const isActive = (flatList[currentIdx] && flatList[currentIdx].volIdx === vi &&
                                     flatList[currentIdx].chapIdx === -1);
-                                const visibleClass = isExpanded ? 'visible' : '';
                                 if (idx !== -1) {
-                                    html +=
-                                        `<div class="sidebar-item chap-indent ${isActive ? 'active' : ''} ${visibleClass}" data-idx="${idx}" data-vol="${vol.title}">
-                                        🗺️ 地图节点
-                                    </div>`;
+                                    volItems.push({
+                                        idx: idx,
+                                        isActive: isActive,
+                                        displayTitle: '🗺️ 地图节点',
+                                        isMap: true
+                                    });
                                 }
                             }
+
+                            html += `<div class="sidebar-vol-header" data-vol="${vi}">
+                                <span class="toggle-icon ${isOpen ? 'open' : ''}"><i class="fas fa-chevron-right"></i></span>
+                                ${vol.title || '未命名分卷'}
+                            </div>`;
+                            html += `<div class="vol-children ${isOpen ? 'open' : ''}">`;
+                            volItems.forEach(item => {
+                                html +=
+                                    `<div class="sidebar-item chap-indent ${item.isActive ? 'active' : ''}" data-idx="${item.idx}">
+                                    ${item.displayTitle}
+                                </div>`;
+                            });
+                            html += `</div>`;
                         });
                     } else {
                         data.forEach((chap, ci) => {
@@ -941,25 +979,20 @@
                             </div>`;
                         });
                     }
-
                     sidebar.innerHTML = html;
 
-                    // 绑定折叠事件
-                    sidebar.querySelectorAll('.vol-toggle').forEach(el => {
+                    // 绑定分卷标题点击事件（折叠/展开）
+                    sidebar.querySelectorAll('.sidebar-vol-header').forEach(el => {
                         el.addEventListener('click', function(e) {
+                            const volIdx = parseInt(this.dataset.vol, 10);
+                            if (!isNaN(volIdx)) {
+                                toggleVol(volIdx);
+                            }
                             e.stopPropagation();
-                            const volTitle = this.dataset.vol;
-                            if (!volTitle) return;
-                            // 切换折叠状态
-                            volCollapseMap[volTitle] = !volCollapseMap[volTitle];
-                            // 重新渲染侧边栏 (保留当前选中)
-                            renderSidebar();
-                            // 如果当前选中的章节被折叠了，不跳转，但需要保证选中状态高亮正确
-                            // 但章节可能不可见，无所谓，保持当前内容
                         });
                     });
 
-                    // 绑定章节点击
+                    // 绑定章节点击事件
                     sidebar.querySelectorAll('.sidebar-item[data-idx]').forEach(el => {
                         el.addEventListener('click', function() {
                             const idx = parseInt(this.dataset.idx, 10);
@@ -1008,7 +1041,6 @@
                         return;
                     }
 
-                    // 地图视图
                     if (isStory && currentView === 'map') {
                         const nodes = getCurrentMapNodes();
                         if (nodes.length === 0) {
@@ -1050,7 +1082,6 @@
                     nextBtn.disabled = (currentIdx === flatList.length - 1);
                 }
 
-                // Tooltip
                 function showTooltip(e, name, desc) {
                     tooltipTitle.textContent = name;
                     tooltipBody.textContent = desc;
@@ -1103,7 +1134,6 @@
                     hideTooltip();
                 }
 
-                // 视图切换
                 if (isStory) {
                     textViewBtn.addEventListener('click', function() {
                         if (currentView === 'text') return;
@@ -1158,7 +1188,6 @@
             });
 
             console.log('番外篇已加载。地图功能：在 dlc story.txt 中使用 @map 节点名 | 介绍 定义节点。');
-            console.log('分卷折叠：点击侧边栏分卷标题可展开/折叠章节。');
         })();
     </script>
 </body>
